@@ -1,0 +1,43 @@
+  =>  Template Name    : Electro - Electronics Website Template
+
+  =>  Template Link    : https://htmlcodex.com/electronics-website-template
+
+  =>  Template License : https://htmlcodex.com/license (or read the LICENSE.txt file)
+
+  =>  Template Author  : HTML Codex
+
+  =>  Author Website   : https://htmlcodex.com
+
+
+  
+  backend/
+├── config/
+│   └── supabase.js          # Supabase client configuration
+├── controllers/
+│   ├── authController.js    # Authentication logic
+│   ├── productController.js # Product CRUD & filtering
+│   ├── categoryController.js
+│   ├── cartController.js
+│   ├── orderController.js
+│   ├── userController.js
+│   ├── reviewController.js
+│   ├── wishlistController.js
+│   └── paymentController.js # Stripe integration
+├── middleware/
+│   ├── auth.js             # JWT authentication
+│   └── errorHandler.js     # Global error handling
+├── routes/
+│   ├── authRoutes.js
+│   ├── productRoutes.js
+│   ├── categoryRoutes.js
+│   ├── cartRoutes.js
+│   ├── orderRoutes.js
+│   ├── userRoutes.js
+│   ├── reviewRoutes.js
+│   ├── wishlistRoutes.js
+│   └── paymentRoutes.js
+├── .env.example            # Environment variables template
+├── .gitignore
+├── package.json            # Dependencies
+├── server.js              # Main server file
+└── README.md              # Complete documentation

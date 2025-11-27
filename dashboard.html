@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>User Dashboard - Awesome Technologies</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="" name="keywords">
+    <meta content="" name="description">
+
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Raleway:wght@600;800&display=swap" rel="stylesheet"> 
+
+    <!-- Icon Font Stylesheet -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css"/>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- Libraries Stylesheet -->
+    <link href="lib/lightbox/css/lightbox.min.css" rel="stylesheet">
+    <link href="lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
+
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Template Stylesheet -->
+    <link href="css/style.css" rel="stylesheet">
+
+    <style>
+        /* Dashboard Sidebar Styles */
+        .dashboard-sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            width: 280px;
+            background: linear-gradient(135deg, #ff8a00 100%, #e52e71 0%);
+            color: white;
+            padding: 20px;
+            overflow-y: auto;
+            transition: all 0.3s ease;
+            z-index: 1050;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+        }
+
+        .dashboard-sidebar.collapsed {
+            left: -280px;
+        }
+
+        .sidebar-header {
+            padding: 20px 10px;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+            margin-bottom: 20px;
+        }
+
+        .sidebar-header h4 {
+            color: white;
+            font-weight: 700;
+            margin: 0;
+            font-size: 1.5rem;
+        }
+
+        .user-profile {
+            text-align: center;
+            padding: 20px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+            margin-bottom: 20px;
+        }
+
+        .user-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+            font-size: 2rem;
+            color: #ff8a00;
+            border: 3px solid rgba(255,255,255,0.3);
+        }
+
+        .user-name {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .user-email {
+            font-size: 0.85rem;
+            opacity: 0.8;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .sidebar-menu li {
+            margin-bottom: 5px;
+        }
+
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .sidebar-menu a:hover,
+        .sidebar-menu a.active {
+            background: rgba(255,255,255,0.15);
+            transform: translateX(5px);
+        }
+
+        .sidebar-menu a i {
+            margin-right: 12px;
+            width: 20px;
+            text-align: center;
+            font-size: 1.1rem;
+        }
+
+        .sidebar-menu .badge {
+            margin-left: auto;
+            background: rgba(255,255,255,0.3);
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+        }
+
+        .logout-btn {
+            margin-top: 20px;
+            padding: 12px 15px;
+            background: rgba(255,255,255,0.2);
+            border: 1px solid rgba(255,255,255,0.3);
+            color: white;
+            text-align: center;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            background: rgba(255,0,0,0.3);
+            border-color: rgba(255,0,0,0.5);
+        }
+
+        .dashboard-content {
+            margin-left: 280px;
+            transition: all 0.3s ease;
+            min-height: 100vh;
+            background: #f8f9fa;
+        }
+
+        .dashboard-content.expanded {
+            margin-left: 0;
+        }
+
+        .dashboard-navbar {
+            background: white;
+            padding: 15px 30px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 1040;
+        }
+
+        .menu-toggle {
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #ff8a00;
+            display: none;
+        }
+
+        .dashboard-body {
+            padding: 30px;
+        }
+
+        .dashboard-card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            margin-bottom: 25px;
+            transition: all 0.3s ease;
+        }
+
+        .dashboard-card:hover {
+            box-shadow: 0 5px 20px rgba(0,0,0,0.12);
+            transform: translateY(-2px);
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 12px;
+            padding: 25px;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .stat-card h3 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin: 10px 0;
+        }
+
+        .stat-card p {
+            margin: 0;
+            opacity: 0.9;
+            font-size: 1rem;
+        }
+
+        .stat-card i {
+            font-size: 3rem;
+            opacity: 0.3;
+            margin-bottom: 10px;
+        }
+
+        /* Responsive */
+        @media (max-width: 991px) {
+            .dashboard-sidebar {
+                left: -280px;
+            }
+
+            .dashboard-sidebar.show {
+                left: 0;
+            }
+
+            .dashboard-content {
+                margin-left: 0;
+            }
+
+            .menu-toggle {
+                display: block;
+            }
+
+            .dashboard-body {
+                padding: 20px 15px;
+            }
+        }
+
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1040;
+        }
+
+        .overlay.show {
+            display: block;
+        }
+
+        .recent-orders-table {
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .recent-orders-table th {
+            background: #f8f9fa;
+            padding: 12px;
+            font-weight: 600;
+            border-bottom: 2px solid #dee2e6;
+        }
+
+        .recent-orders-table td {
+            padding: 12px;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .status-badge {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-completed {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-processing {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Sidebar Overlay -->
+    <div class="overlay" id="overlay"></div>
+
+    <!-- Dashboard Sidebar -->
+    <div class="dashboard-sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h4><i class="fas fa-shopping-bag me-2"></i>Awesome Tech</h4>
+        </div>
+
+        <div class="user-profile">
+            <div class="user-avatar">
+                <i class="fas fa-user"></i>
+            </div>
+            <div class="user-name">John Doe</div>
+            <div class="user-email">john.doe@email.com</div>
+        </div>
+
+        <ul class="sidebar-menu">
+            <li><a href="#" class="active"><i class="fas fa-home"></i>Dashboard</a></li>
+            <li><a href="#"><i class="fas fa-user"></i>My Profile</a></li>
+            <li><a href="#"><i class="fas fa-shopping-cart"></i>My Cart<span class="badge">3</span></a></li>
+            <li><a href="#"><i class="fas fa-box"></i>My Orders<span class="badge">5</span></a></li>
+            <li><a href="#"><i class="fas fa-heart"></i>Wishlist<span class="badge">12</span></a></li>
+            <li><a href="#"><i class="fas fa-bell"></i>Notifications<span class="badge">8</span></a></li>
+            <li><a href="#"><i class="fas fa-map-marker-alt"></i>Addresses</a></li>
+            <li><a href="#"><i class="fas fa-credit-card"></i>Payment Methods</a></li>
+            <li><a href="#"><i class="fas fa-cog"></i>Settings</a></li>
+            <li><a href="#"><i class="fas fa-headset"></i>Support</a></li>
+        </ul>
+
+        <div class="logout-btn" onclick="handleLogout()">
+            <i class="fas fa-sign-out-alt me-2"></i>Logout
+        </div>
+    </div>
+
+    <!-- Dashboard Content -->
+    <div class="dashboard-content" id="dashboardContent">
+        <!-- Dashboard Navbar -->
+        <div class="dashboard-navbar">
+            <div class="d-flex align-items-center">
+                <i class="fas fa-bars menu-toggle me-3" id="menuToggle"></i>
+                <h5 class="mb-0 text-primary fw-bold">Welcome Back, John!</h5>
+            </div>
+            <div class="d-flex align-items-center gap-3">
+                <a href="index.html" class="btn btn-outline-primary btn-sm rounded-pill">
+                    <i class="fas fa-home me-2"></i>Back to Shop
+                </a>
+            </div>
+        </div>
+
+        <!-- Dashboard Body -->
+        <div class="dashboard-body">
+            <!-- Statistics Cards -->
+            <div class="row">
+                <div class="col-md-3 col-sm-6">
+                    <div class="stat-card" style="background: linear-gradient(135deg, #ff8a00 0%, #e52e71 100%);">
+                        <i class="fas fa-shopping-cart"></i>
+                        <h3>3</h3>
+                        <p>Items in Cart</p>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-6">
+                    <div class="stat-card" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                        <i class="fas fa-box"></i>
+                        <h3>12</h3>
+                        <p>Total Orders</p>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-6">
+                    <div class="stat-card" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+                        <i class="fas fa-heart"></i>
+                        <h3>18</h3>
+                        <p>Wishlist Items</p>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-6">
+                    <div class="stat-card" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);">
+                        <i class="fas fa-wallet"></i>
+                        <h3>KSh 245K</h3>
+                        <p>Total Spent</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Orders -->
+            <div class="dashboard-card">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h4 class="mb-0"><i class="fas fa-box text-primary me-2"></i>Recent Orders</h4>
+                    <a href="#" class="btn btn-sm btn-outline-primary rounded-pill">View All</a>
+                </div>
+                <div class="table-responsive">
+                    <table class="recent-orders-table">
+                        <thead>
+                            <tr>
+                                <th>Order ID</th>
+                                <th>Product</th>
+                                <th>Date</th>
+                                <th>Amount</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>#ORD-2025-001</td>
+                                <td>HP Pavilion 15 Laptop</td>
+                                <td>Nov 20, 2025</td>
+                                <td>KSh 159,999</td>
+                                <td><span class="status-badge status-processing">Processing</span></td>
+                                <td><a href="#" class="text-primary">Track</a></td>
+                            </tr>
+                            <tr>
+                                <td>#ORD-2025-002</td>
+                                <td>Sony WH-1000XM5 Headphones</td>
+                                <td>Nov 18, 2025</td>
+                                <td>KSh 42,999</td>
+                                <td><span class="status-badge status-completed">Delivered</span></td>
+                                <td><a href="#" class="text-primary">Review</a></td>
+                            </tr>
+                            <tr>
+                                <td>#ORD-2025-003</td>
+                                <td>Samsung 1TB SSD</td>
+                                <td>Nov 15, 2025</td>
+                                <td>KSh 23,500</td>
+                                <td><span class="status-badge status-completed">Delivered</span></td>
+                                <td><a href="#" class="text-primary">Review</a></td>
+                            </tr>
+                            <tr>
+                                <td>#ORD-2025-004</td>
+                                <td>iPhone 15 Pro Max</td>
+                                <td>Nov 10, 2025</td>
+                                <td>KSh 149,999</td>
+                                <td><span class="status-badge status-pending">Pending</span></td>
+                                <td><a href="#" class="text-primary">Pay Now</a></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="dashboard-card text-center">
+                        <i class="fas fa-shopping-cart fa-3x text-primary mb-3"></i>
+                        <h5>My Cart</h5>
+                        <p class="text-muted mb-3">3 items waiting</p>
+                        <a href="#" class="btn btn-primary rounded-pill">View Cart</a>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="dashboard-card text-center">
+                        <i class="fas fa-heart fa-3x text-danger mb-3"></i>
+                        <h5>Wishlist</h5>
+                        <p class="text-muted mb-3">18 saved items</p>
+                        <a href="#" class="btn btn-outline-danger rounded-pill">View Wishlist</a>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="dashboard-card text-center">
+                        <i class="fas fa-user-cog fa-3x text-success mb-3"></i>
+                        <h5>Profile Settings</h5>
+                        <p class="text-muted mb-3">Update your info</p>
+                        <a href="#" class="btn btn-outline-success rounded-pill">Edit Profile</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript Libraries -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Dashboard Script -->
+    <script>
+        // Menu Toggle for Mobile
+        const menuToggle = document.getElementById('menuToggle');
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('overlay');
+        const dashboardContent = document.getElementById('dashboardContent');
+
+        menuToggle.addEventListener('click', function() {
+            sidebar.classList.toggle('show');
+            overlay.classList.toggle('show');
+        });
+
+        overlay.addEventListener('click', function() {
+            sidebar.classList.remove('show');
+            overlay.classList.remove('show');
+        });
+
+        // Handle Logout
+        function handleLogout() {
+            if(confirm('Are you sure you want to logout?')) {
+                alert('Logging out...');
+                window.location.href = 'index.html';
+            }
+        }
+
+        // Close sidebar when clicking a menu item on mobile
+        const sidebarLinks = document.querySelectorAll('.sidebar-menu a');
+        sidebarLinks.forEach(link => {
+            link.addEventListener('click', function() {
+                if(window.innerWidth < 992) {
+                    sidebar.classList.remove('show');
+                    overlay.classList.remove('show');
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

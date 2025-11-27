@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Product Details - Awesome Technologies</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="" name="keywords">
+    <meta content="" name="description">
+
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Raleway:wght@600;800&display=swap" rel="stylesheet"> 
+
+    <!-- Icon Font Stylesheet -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css"/>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- Libraries Stylesheet -->
+    <link href="lib/lightbox/css/lightbox.min.css" rel="stylesheet">
+    <link href="lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Template Stylesheet -->
+    <link href="css/style.css" rel="stylesheet">
+
+    <style>
+        /* Product Image Gallery */
+        .product-gallery {
+            position: sticky;
+            top: 20px;
+        }
+
+        .main-image {
+            border: 2px solid #f0f0f0;
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 15px;
+            background: white;
+            height: 500px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .main-image img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+
+        .thumbnail-gallery {
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            padding-bottom: 10px;
+        }
+
+        .thumbnail {
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            flex-shrink: 0;
+            width: 80px;
+            height: 80px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: white;
+        }
+
+        .thumbnail:hover,
+        .thumbnail.active {
+            border-color: var(--bs-primary);
+            transform: scale(1.05);
+        }
+
+        .thumbnail img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+
+        /* Product Info */
+        .product-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .product-rating {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .rating-stars {
+            color: #ffc107;
+            font-size: 1.1rem;
+        }
+
+        .price-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 25px;
+            border-radius: 12px;
+            color: white;
+            margin-bottom: 25px;
+        }
+
+        .current-price {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .old-price {
+            text-decoration: line-through;
+            opacity: 0.7;
+            font-size: 1.3rem;
+            margin-left: 10px;
+        }
+
+        .discount-badge {
+            background: #ff4757;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: 600;
+            display: inline-block;
+            margin-top: 10px;
+        }
+
+        .condition-badge {
+            display: inline-block;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+        }
+
+        .condition-new {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .condition-refurbished {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        /* Specifications */
+        .specs-table {
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .specs-table tr {
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .specs-table td {
+            padding: 15px 10px;
+        }
+
+        .specs-table td:first-child {
+            font-weight: 600;
+            color: #666;
+            width: 40%;
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .btn-add-cart {
+            flex: 1;
+            padding: 15px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 8px;
+        }
+
+        .btn-whatsapp {
+            background: #25D366;
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-whatsapp:hover {
+            background: #1ea952;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(37, 211, 102, 0.3);
+        }
+
+        .quantity-selector {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .quantity-input {
+            display: flex;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .quantity-btn {
+            background: #f8f9fa;
+            border: none;
+            padding: 10px 20px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .quantity-btn:hover {
+            background: var(--bs-primary);
+            color: white;
+        }
+
+        .quantity-value {
+            padding: 10px 25px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            border: none;
+            text-align: center;
+            width: 80px;
+        }
+
+        /* Product Tabs */
+        .product-tabs {
+            margin-top: 50px;
+        }
+
+        .nav-tabs .nav-link {
+            color: #666;
+            font-weight: 600;
+            padding: 15px 30px;
+            border: none;
+            border-bottom: 3px solid transparent;
+        }
+
+        .nav-tabs .nav-link.active {
+            color: var(--bs-primary);
+            border-bottom-color: var(--bs-primary);
+            background: transparent;
+        }
+
+        .stock-status {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #d4edda;
+            border-radius: 8px;
+            color: #155724;
+            font-weight: 600;
+        }
+
+        .stock-status.out-of-stock {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .product-title {
+                font-size: 1.5rem;
+            }
+
+            .current-price {
+                font-size: 2rem;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .main-image {
+                height: 350px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Product Detail Section -->
+    <div class="container-fluid py-5">
+        <div class="container">
+            <!-- Breadcrumb -->
+            <nav aria-label="breadcrumb" class="mb-4">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+                    <li class="breadcrumb-item"><a href="shop.html">Shop</a></li>
+                    <li class="breadcrumb-item active" id="breadcrumb-product">Product Details</li>
+                </ol>
+            </nav>
+
+            <div class="row g-4">
+                <!-- Product Gallery -->
+                <div class="col-lg-6">
+                    <div class="product-gallery">
+                        <div class="main-image" id="mainImage">
+                            <img src="img/product-1.png" alt="Product" id="mainImg">
+                        </div>
+                        <div class="thumbnail-gallery" id="thumbnailGallery">
+                            <div class="thumbnail active" onclick="changeImage('img/product-1.png')">
+                                <img src="img/product-1.png" alt="Thumbnail 1">
+                            </div>
+                            <div class="thumbnail" onclick="changeImage('img/product-2.png')">
+                                <img src="img/product-2.png" alt="Thumbnail 2">
+                            </div>
+                            <div class="thumbnail" onclick="changeImage('img/product-3.png')">
+                                <img src="img/product-3.png" alt="Thumbnail 3">
+                            </div>
+                            <div class="thumbnail" onclick="changeImage('img/product-4.png')">
+                                <img src="img/product-4.png" alt="Thumbnail 4">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product Details -->
+                <div class="col-lg-6">
+                    <div class="condition-badge condition-new" id="conditionBadge">
+                        <i class="fas fa-check-circle me-2"></i>Brand New
+                    </div>
+
+                    <h1 class="product-title" id="productName">HP Pavilion 15 Laptop - 15.6" FHD Display</h1>
+
+                    <div class="product-rating">
+                        <div class="rating-stars">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star-half-alt"></i>
+                        </div>
+                        <span class="text-muted">(4.5) 124 Reviews</span>
+                    </div>
+
+                    <div class="stock-status" id="stockStatus">
+                        <i class="fas fa-check-circle"></i>
+                        <span>In Stock - Ships within 24 hours</span>
+                    </div>
+
+                    <div class="price-section">
+                        <div class="d-flex align-items-center">
+                            <div class="current-price" id="currentPrice">KSh 159,999</div>
+                            <div class="old-price" id="oldPrice">KSh 185,000</div>
+                        </div>
+                        <div class="discount-badge">Save KSh 25,001 (14% OFF)</div>
+                    </div>
+
+                    <!-- Brand & SKU -->
+                    <div class="mb-4">
+                        <p class="mb-2"><strong>Brand:</strong> <span id="productBrand">HP</span></p>
+                        <p class="mb-2"><strong>SKU:</strong> <span id="productSku">HP-LAP-2025-001</span></p>
+                        <p class="mb-0"><strong>Category:</strong> <span id="productCategory">Laptops</span></p>
+                    </div>
+
+                    <!-- Quantity Selector -->
+                    <div class="quantity-selector">
+                        <strong>Quantity:</strong>
+                        <div class="quantity-input">
+                            <button class="quantity-btn" onclick="decreaseQuantity()">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                            <input type="number" class="quantity-value" id="quantity" value="1" min="1" max="10" readonly>
+                            <button class="quantity-btn" onclick="increaseQuantity()">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="action-buttons">
+                        <button class="btn btn-primary btn-add-cart" onclick="addToCart()">
+                            <i class="fas fa-shopping-cart me-2"></i>Add to Cart
+                        </button>
+                        <button class="btn-whatsapp" onclick="chatWhatsApp()">
+                            <i class="fab fa-whatsapp fa-lg"></i>
+                            Chat on WhatsApp
+                        </button>
+                    </div>
+
+                    <!-- Additional Actions -->
+                    <div class="d-flex gap-3 mt-3">
+                        <button class="btn btn-outline-danger flex-fill" onclick="addToWishlist()">
+                            <i class="fas fa-heart me-2"></i>Add to Wishlist
+                        </button>
+                        <button class="btn btn-outline-secondary flex-fill" onclick="compareProduct()">
+                            <i class="fas fa-exchange-alt me-2"></i>Compare
+                        </button>
+                    </div>
+
+                    <!-- Quick Info -->
+                    <div class="mt-4 p-3 bg-light rounded">
+                        <div class="row g-3">
+                            <div class="col-6">
+                                <i class="fas fa-truck text-primary me-2"></i>
+                                <small>Free Delivery</small>
+                            </div>
+                            <div class="col-6">
+                                <i class="fas fa-undo text-primary me-2"></i>
+                                <small>30-Day Returns</small>
+                            </div>
+                            <div class="col-6">
+                                <i class="fas fa-shield-alt text-primary me-2"></i>
+                                <small>1 Year Warranty</small>
+                            </div>
+                            <div class="col-6">
+                                <i class="fas fa-headset text-primary me-2"></i>
+                                <small>24/7 Support</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Product Tabs -->
+            <div class="product-tabs mt-5">
+                <ul class="nav nav-tabs" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active" data-bs-toggle="tab" href="#description">Description</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-bs-toggle="tab" href="#specifications">Specifications</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-bs-toggle="tab" href="#reviews">Reviews (124)</a>
+                    </li>
+                </ul>
+
+                <div class="tab-content bg-white p-4 border border-top-0 rounded-bottom">
+                    <!-- Description Tab -->
+                    <div id="description" class="tab-pane fade show active">
+                        <h4 class="mb-3">Product Description</h4>
+                        <p>Experience unparalleled performance with the HP Pavilion 15 Laptop. Designed for professionals and students alike, this laptop combines power, style, and portability in one sleek package.</p>
+                        
+                        <h5 class="mt-4 mb-3">Key Features:</h5>
+                        <ul class="list-unstyled">
+                            <li class="mb-2"><i class="fas fa-check text-success me-2"></i>15.6" Full HD IPS Display (1920 x 1080)</li>
+                            <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Intel Core i7 11th Gen Processor</li>
+                            <li class="mb-2"><i class="fas fa-check text-success me-2"></i>16GB DDR4 RAM for seamless multitasking</li>
+                            <li class="mb-2"><i class="fas fa-check text-success me-2"></i>512GB NVMe SSD for lightning-fast storage</li>
+                            <li class="mb-2"><i class="fas fa-check text-success me-2"></i>NVIDIA GeForce MX450 Graphics</li>
+                            <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Backlit Keyboard for comfortable typing</li>
+                            <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Up to 8 hours battery life</li>
+                            <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Windows 11 Pro</li>
+                        </ul>
+
+                        <p class="mt-4">Whether you're working on complex projects, streaming your favorite shows, or gaming in your free time, the HP Pavilion 15 delivers exceptional performance every time.</p>
+                    </div>
+
+                    <!-- Specifications Tab -->
+                    <div id="specifications" class="tab-pane fade">
+                        <h4 class="mb-3">Technical Specifications</h4>
+                        <table class="specs-table">
+                            <tbody>
+                                <tr>
+                                    <td><i class="fas fa-microchip text-primary me-2"></i>Processor</td>
+                                    <td>Intel Core i7-1165G7 (11th Gen), 2.8GHz Base, 4.7GHz Turbo</td>
+                                </tr>
+                                <tr>
+                                    <td><i class="fas fa-memory text-primary me-2"></i>RAM</td>
+                                    <td>16GB DDR4 3200MHz (Upgradeable to 32GB)</td>
+                                </tr>
+                                <tr>
+                                    <td><i class="fas fa-hdd text-primary me-2"></i>Storage</td>
+                                    <td>512GB PCIe NVMe M.2 SSD</td>
+                                </tr>
+                                <tr>
+                                    <td><i class="fas fa-desktop text-primary me-2"></i>Display</td>
+                                    <td>15.6" FHD (1920 x 1080) IPS, Anti-glare, 250 nits</td>
+                                </tr>
+                                <tr>
+                                    <td><i class="fas fa-photo-video text-primary me-2"></i>Graphics</td>
+                                    <td>NVIDIA GeForce MX450 2GB GDDR6 + Intel Iris Xe</td>
+                                </tr>
+                                <tr>
+                                    <td><i class="fab fa-windows text-primary me-2"></i>Operating System</td>
+                                    <td>Windows 11 Pro (64-bit)</td>
+                                </tr>
+                                <tr>
+                                    <td><i class="fas fa-battery-full text-primary me-2"></i>Battery</td>
+                                    <td>3-cell, 41Wh Li-ion, Up to 8 hours</td>
+                                </tr>
+                                <tr>
+                                    <td><i class="fas fa-wifi text-primary me-2"></i>Connectivity</td>
+                                    <td>Wi-Fi 6 (802.11ax), Bluetooth 5.0</td>
+                                </tr>
+                                <tr>
+                                    <td><i class="fas fa-plug text-primary me-2"></i>Ports</td>
+                                    <td>2x USB 3.2 Gen 1, 1x USB Type-C, HDMI 2.0, Audio Jack, SD Card Reader</td>
+                                </tr>
+                                <tr>
+                                    <td><i class="fas fa-weight text-primary me-2"></i>Weight</td>
+                                    <td>1.75 kg (3.86 lbs)</td>
+                                </tr>
+                                <tr>
+                                    <td><i class="fas fa-ruler text-primary me-2"></i>Dimensions</td>
+                                    <td>358 x 242 x 18.9 mm</td>
+                                </tr>
+                                <tr>
+                                    <td><i class="fas fa-palette text-primary me-2"></i>Color</td>
+                                    <td>Natural Silver</td>
+                                </tr>
+                                <tr>
+                                    <td><i class="fas fa-shield-alt text-primary me-2"></i>Warranty</td>
+                                    <td>1 Year International Warranty</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Reviews Tab -->
+                    <div id="reviews" class="tab-pane fade">
+                        <h4 class="mb-4">Customer Reviews</h4>
+                        
+                        <!-- Review Summary -->
+                        <div class="row mb-4">
+                            <div class="col-md-4 text-center">
+                                <h2 class="display-4 fw-bold text-primary">4.5</h2>
+                                <div class="rating-stars mb-2">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star-half-alt"></i>
+                                </div>
+                                <p class="text-muted">Based on 124 reviews</p>
+                            </div>
+                            <div class="col-md-8">
+                                <div class="mb-2 d-flex align-items-center">
+                                    <span class="me-2">5 <i class="fas fa-star text-warning"></i></span>
+                                    <div class="progress flex-fill" style="height: 8px;">
+                                        <div class="progress-bar bg-success" style="width: 70%"></div>
+                                    </div>
+                                    <span class="ms-2 text-muted">87</span>
+                                </div>
+                                <div class="mb-2 d-flex align-items-center">
+                                    <span class="me-2">4 <i class="fas fa-star text-warning"></i></span>
+                                    <div class="progress flex-fill" style="height: 8px;">
+                                        <div class="progress-bar bg-info" style="width: 20%"></div>
+                                    </div>
+                                    <span class="ms-2 text-muted">25</span>
+                                </div>
+                                <div class="mb-2 d-flex align-items-center">
+                                    <span class="me-2">3 <i class="fas fa-star text-warning"></i></span>
+                                    <div class="progress flex-fill" style="height: 8px;">
+                                        <div class="progress-bar bg-warning" style="width: 6%"></div>
+                                    </div>
+                                    <span class="ms-2 text-muted">8</span>
+                                </div>
+                                <div class="mb-2 d-flex align-items-center">
+                                    <span class="me-2">2 <i class="fas fa-star text-warning"></i></span>
+                                    <div class="progress flex-fill" style="height: 8px;">
+                                        <div class="progress-bar bg-danger" style="width: 3%"></div>
+                                    </div>
+                                    <span class="ms-2 text-muted">3</span>
+                                </div>
+                                <div class="mb-2 d-flex align-items-center">
+                                    <span class="me-2">1 <i class="fas fa-star text-warning"></i></span>
+                                    <div class="progress flex-fill" style="height: 8px;">
+                                        <div class="progress-bar bg-danger" style="width: 1%"></div>
+                                    </div>
+                                    <span class="ms-2 text-muted">1</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Individual Reviews -->
+                        <div class="border-top pt-4">
+                            <div class="mb-4">
+                                <div class="d-flex justify-content-between mb-2">
+                                    <div>
+                                        <strong>John K.</strong>
+                                        <div class="rating-stars small">
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                        </div>
+                                    </div>
+                                    <span class="text-muted small">November 20, 2025</span>
+                                </div>
+                                <p class="mb-0">Excellent laptop! Fast performance, great build quality. Perfect for my work and entertainment needs.</p>
+                            </div>
+
+                            <div class="mb-4 border-top pt-3">
+                                <div class="d-flex justify-content-between mb-2">
+                                    <div>
+                                        <strong>Sarah M.</strong>
+                                        <div class="rating-stars small">
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="far fa-star"></i>
+                                        </div>
+                                    </div>
+                                    <span class="text-muted small">November 18, 2025</span>
+                                </div>
+                                <p class="mb-0">Good laptop for the price. Battery life could be better, but overall very satisfied with the purchase.</p>
+                            </div>
+
+                            <div class="text-center mt-4">
+                                <button class="btn btn-outline-primary rounded-pill">Load More Reviews</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Related Products -->
+            <div class="mt-5">
+                <h3 class="mb-4">Related Products</h3>
+                <div class="row g-4">
+                    <!-- Related product cards will be loaded here via JavaScript -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript Libraries -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="lib/lightbox/js/lightbox.min.js"></script>
+    <script src="js/cart-manager.js"></script>
+
+    <script>
+        // Image Gallery Functions
+        function changeImage(imageSrc) {
+            document.getElementById('mainImg').src = imageSrc;
+            
+            // Update active thumbnail
+            const thumbnails = document.querySelectorAll('.thumbnail');
+            thumbnails.forEach(thumb => thumb.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+        }
+
+        // Quantity Functions
+        function increaseQuantity() {
+            const input = document.getElementById('quantity');
+            const max = parseInt(input.max);
+            const current = parseInt(input.value);
+            if (current < max) {
+                input.value = current + 1;
+            }
+        }
+
+        function decreaseQuantity() {
+            const input = document.getElementById('quantity');
+            const min = parseInt(input.min);
+            const current = parseInt(input.value);
+            if (current > min) {
+                input.value = current - 1;
+            }
+        }
+
+        // Add to Cart
+        function addToCart() {
+            const quantity = parseInt(document.getElementById('quantity').value);
+            const productName = document.getElementById('productName').textContent;
+            const productBrand = document.getElementById('productBrand').textContent;
+            const priceText = document.getElementById('currentPrice').textContent;
+            const price = parseInt(priceText.replace(/[^0-9]/g, ''));
+            
+            const oldPriceElement = document.getElementById('oldPrice');
+            const oldPrice = oldPriceElement && oldPriceElement.textContent ? 
+                parseInt(oldPriceElement.textContent.replace(/[^0-9]/g, '')) : null;
+            
+            // Get product ID from URL or generate one
+            const urlParams = new URLSearchParams(window.location.search);
+            const productId = urlParams.get('id') || Math.floor(Math.random() * 10000);
+            
+            // Create product object
+            const product = {
+                id: parseInt(productId),
+                name: productName,
+                brand: productBrand,
+                price: price,
+                oldPrice: oldPrice,
+                image: document.getElementById('mainImg').src,
+                specs: {
+                    processor: 'Intel Core i7 11th Gen',
+                    ram: '16GB',
+                    storage: '512GB SSD'
+                }
+            };
+            
+            // Add to cart using cart manager
+            window.cartManager.addItem(product, quantity);
+        }
+
+        // WhatsApp Chat
+        function chatWhatsApp() {
+            const productName = document.getElementById('productName').textContent;
+            const productBrand = document.getElementById('productBrand').textContent;
+            const productPrice = document.getElementById('currentPrice').textContent;
+            const whatsappNumber = '+254704546916';
+            
+            let message = `Hello! I'm interested in this product:\n\n`;
+            message += `📱 *${productName}*\n`;
+            message += `🏷️ Brand: ${productBrand}\n`;
+            message += `💰 Price: ${productPrice}\n\n`;
+            message += `Could you please provide more information about:\n`;
+            message += `• Availability and stock status\n`;
+            message += `• Warranty details\n`;
+            message += `• Delivery options and timeline\n\n`;
+            message += `Thank you!`;
+            
+            const encodedMessage = encodeURIComponent(message);
+            const whatsappUrl = `https://wa.me/${whatsappNumber.replace(/[^0-9]/g, '')}?text=${encodedMessage}`;
+            window.open(whatsappUrl, '_blank');
+        }
+
+        // Add to Wishlist
+        function addToWishlist() {
+            const productName = document.getElementById('productName').textContent;
+            // TODO: Implement wishlist logic with API
+            window.cartManager.showNotification('Added to wishlist', `${productName} saved for later`, 'success');
+        }
+
+        // Compare Product
+        function compareProduct() {
+            // TODO: Implement compare logic
+            showNotification('Added to comparison list!', 'info');
+        }
+
+        // Notification Function
+        function showNotification(message, type) {
+            const colors = {
+                success: '#28a745',
+                info: '#17a2b8',
+                warning: '#ffc107',
+                error: '#dc3545'
+            };
+
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: ${colors[type]};
+                color: white;
+                padding: 15px 25px;
+                border-radius: 8px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                z-index: 9999;
+                animation: slideIn 0.3s ease;
+            `;
+            notification.textContent = message;
+
+            document.body.appendChild(notification);
+
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+
+        // Load Product Data from URL Parameter (optional)
+        const urlParams = new URLSearchParams(window.location.search);
+        const productId = urlParams.get('id');
+
+        if (productId) {
+            // TODO: Fetch product data from API using productId
+            console.log('Loading product:', productId);
+        }
+    </script>
+
+    <style>
+        @keyframes slideIn {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideOut {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+        }
+    </style>
+</body>
+
+</html>

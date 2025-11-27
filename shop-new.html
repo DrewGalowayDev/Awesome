@@ -1,0 +1,948 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Shop - Awesome Technologies</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="" name="keywords">
+    <meta content="" name="description">
+
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <!-- Icon Font Stylesheet -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css"/>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Template Stylesheet -->
+    <link href="css/style.css" rel="stylesheet">
+
+    <!-- noUiSlider for price range -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.7.1/nouislider.min.css">
+
+    <style>
+        /* Filter Sidebar Styles */
+        .filter-sidebar {
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.08);
+            position: sticky;
+            top: 20px;
+        }
+
+        .filter-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: #333;
+            border-bottom: 2px solid var(--bs-primary);
+            padding-bottom: 10px;
+        }
+
+        .filter-section {
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .filter-section:last-child {
+            border-bottom: none;
+        }
+
+        .filter-section h5 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #444;
+        }
+
+        .form-check {
+            margin-bottom: 12px;
+        }
+
+        .form-check-label {
+            color: #666;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .form-check-input:checked ~ .form-check-label {
+            color: var(--bs-primary);
+            font-weight: 600;
+        }
+
+        .price-inputs {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            margin-top: 15px;
+        }
+
+        .price-inputs input {
+            width: 100px;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            text-align: center;
+        }
+
+        #priceRange {
+            margin: 20px 0;
+        }
+
+        .noUi-connect {
+            background: var(--bs-primary);
+        }
+
+        .noUi-horizontal .noUi-handle {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 2px solid var(--bs-primary);
+            background: white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        /* Product Grid Styles */
+        .product-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.08);
+            transition: all 0.3s;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
+        .product-image {
+            position: relative;
+            overflow: hidden;
+            background: #f8f9fa;
+            height: 250px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .product-image img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            transition: transform 0.3s;
+        }
+
+        .product-card:hover .product-image img {
+            transform: scale(1.1);
+        }
+
+        .product-badges {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .badge-new {
+            background: #28a745;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .badge-sale {
+            background: #ff4757;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .badge-refurbished {
+            background: #ffc107;
+            color: #333;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .product-actions {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .product-card:hover .product-actions {
+            opacity: 1;
+        }
+
+        .action-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: white;
+            border: none;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .action-btn:hover {
+            background: var(--bs-primary);
+            color: white;
+            transform: scale(1.1);
+        }
+
+        .product-info {
+            padding: 20px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .product-brand {
+            color: #999;
+            font-size: 0.85rem;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .product-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 10px;
+            line-height: 1.4;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .product-rating {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            margin-bottom: 12px;
+        }
+
+        .rating-stars {
+            color: #ffc107;
+            font-size: 0.85rem;
+        }
+
+        .rating-count {
+            color: #999;
+            font-size: 0.8rem;
+        }
+
+        .product-price {
+            margin-top: auto;
+        }
+
+        .current-price {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--bs-primary);
+        }
+
+        .old-price {
+            text-decoration: line-through;
+            color: #999;
+            font-size: 1rem;
+            margin-left: 10px;
+        }
+
+        .product-footer {
+            padding: 15px 20px;
+            border-top: 1px solid #f0f0f0;
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-add-cart {
+            flex: 1;
+            padding: 10px;
+            border-radius: 8px;
+            font-weight: 600;
+        }
+
+        .btn-quick-view {
+            padding: 10px 15px;
+            border-radius: 8px;
+            border: 2px solid var(--bs-primary);
+            background: white;
+            color: var(--bs-primary);
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn-quick-view:hover {
+            background: var(--bs-primary);
+            color: white;
+        }
+
+        /* Search & Sort Bar */
+        .search-sort-bar {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.08);
+            margin-bottom: 25px;
+        }
+
+        .result-count {
+            color: #666;
+            font-weight: 600;
+        }
+
+        /* Mobile Filter Toggle */
+        .filter-toggle-btn {
+            display: none;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 991px) {
+            .filter-toggle-btn {
+                display: block;
+            }
+
+            .filter-sidebar {
+                position: fixed;
+                top: 0;
+                left: -100%;
+                width: 300px;
+                height: 100vh;
+                overflow-y: auto;
+                z-index: 1050;
+                transition: left 0.3s;
+            }
+
+            .filter-sidebar.show {
+                left: 0;
+            }
+
+            .filter-overlay {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0,0,0,0.5);
+                z-index: 1040;
+            }
+
+            .filter-overlay.show {
+                display: block;
+            }
+        }
+
+        /* Loading State */
+        .loading-skeleton {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: loading 1.5s infinite;
+        }
+
+        @keyframes loading {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Topbar Start -->
+    <div class="container-fluid px-5 d-none border-bottom d-lg-block">
+        <div class="row gx-0 align-items-center">
+            <div class="col-lg-4 text-center text-lg-start mb-lg-0">
+                <div class="d-inline-flex align-items-center" style="height: 45px;">
+                    <a href="#" class="text-muted me-2">Help</a><small> / </small>
+                    <a href="#" class="text-muted mx-2">Support</a><small> / </small>
+                    <a href="#" class="text-muted ms-2">Contact</a>
+                </div>
+            </div>
+            <div class="col-lg-4 text-center d-flex align-items-center justify-content-center">
+                <small class="text-dark">Call Us:</small>
+                <a href="tel:+254704546916" class="text-muted">+254 704546916</a>
+            </div>
+            <div class="col-lg-4 text-center text-lg-end">
+                <div class="d-inline-flex align-items-center" style="height: 45px;">
+                    <div class="dropdown">
+                        <a href="#" class="dropdown-toggle text-muted me-2" data-bs-toggle="dropdown"><small>KSh</small></a>
+                        <div class="dropdown-menu rounded">
+                            <a href="#" class="dropdown-item">KSh - Kenyan Shilling</a>
+                        </div>
+                    </div>
+                    <div class="dropdown">
+                        <a href="#" class="dropdown-toggle text-muted ms-2" data-bs-toggle="dropdown"><small><i class="fa fa-home me-2"></i>My Dashboard</small></a>
+                        <div class="dropdown-menu rounded">
+                            <a href="dashboard.html" class="dropdown-item">Dashboard</a>
+                            <a href="#" class="dropdown-item">Wishlist</a>
+                            <a href="cart.html" class="dropdown-item">My Cart</a>
+                            <a href="#" class="dropdown-item">Account Settings</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Header Start -->
+    <div class="container-fluid px-5 py-4 d-none d-lg-block">
+        <div class="row gx-7 align-items-center">
+            <div class="col-lg-2 pe-4">
+                <a href="index.html" class="navbar-brand">
+                    <h4 class="text-primary m-0"><i class="fas fa-laptop text-secondary me-2"></i>Awesome Tech</h4>
+                </a>
+            </div>
+            <div class="col-lg-6 ps-3">
+                <div class="position-relative" style="max-width: 650px; margin: 0 auto;">
+                    <div class="d-flex border rounded-pill">
+                        <input class="form-control border-0 rounded-pill w-100 py-3" type="text" id="searchInput" placeholder="Search for laptops, phones, accessories...">
+                        <button type="button" class="btn btn-primary rounded-pill py-3 px-5" onclick="searchProducts()">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 text-end">
+                <div class="d-inline-flex align-items-center">
+                    <a href="#" class="text-muted me-3"><i class="fas fa-heart fa-lg"></i></a>
+                    <a href="cart.html" class="text-muted"><i class="fas fa-shopping-cart fa-lg"></i> <span class="badge bg-primary" id="cartCount">0</span></a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Header End -->
+
+    <!-- Shop Section -->
+    <div class="container-fluid py-5">
+        <div class="container">
+            <!-- Mobile Filter Toggle -->
+            <button class="btn btn-primary filter-toggle-btn" onclick="toggleFilters()">
+                <i class="fas fa-filter me-2"></i>Show Filters
+            </button>
+
+            <div class="row g-4">
+                <!-- Filter Sidebar -->
+                <div class="col-lg-3">
+                    <div class="filter-overlay" onclick="toggleFilters()"></div>
+                    <div class="filter-sidebar" id="filterSidebar">
+                        <div class="d-flex justify-content-between align-items-center mb-3 d-lg-none">
+                            <h5 class="m-0">Filters</h5>
+                            <button class="btn-close" onclick="toggleFilters()"></button>
+                        </div>
+
+                        <h3 class="filter-title"><i class="fas fa-filter me-2"></i>Filters</h3>
+
+                        <!-- Price Range Filter -->
+                        <div class="filter-section">
+                            <h5><i class="fas fa-money-bill-wave me-2"></i>Price Range</h5>
+                            <div id="priceRange"></div>
+                            <div class="price-inputs">
+                                <input type="text" id="minPrice" readonly placeholder="Min">
+                                <span>-</span>
+                                <input type="text" id="maxPrice" readonly placeholder="Max">
+                            </div>
+                        </div>
+
+                        <!-- Brand Filter -->
+                        <div class="filter-section">
+                            <h5><i class="fas fa-tag me-2"></i>Brand</h5>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="HP" id="brandHP" onchange="applyFilters()">
+                                <label class="form-check-label" for="brandHP">
+                                    HP <span class="text-muted">(45)</span>
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="Dell" id="brandDell" onchange="applyFilters()">
+                                <label class="form-check-label" for="brandDell">
+                                    Dell <span class="text-muted">(38)</span>
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="Apple" id="brandApple" onchange="applyFilters()">
+                                <label class="form-check-label" for="brandApple">
+                                    Apple <span class="text-muted">(28)</span>
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="Lenovo" id="brandLenovo" onchange="applyFilters()">
+                                <label class="form-check-label" for="brandLenovo">
+                                    Lenovo <span class="text-muted">(32)</span>
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="Samsung" id="brandSamsung" onchange="applyFilters()">
+                                <label class="form-check-label" for="brandSamsung">
+                                    Samsung <span class="text-muted">(24)</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Condition Filter -->
+                        <div class="filter-section">
+                            <h5><i class="fas fa-box-open me-2"></i>Condition</h5>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="condition" value="all" id="conditionAll" checked onchange="applyFilters()">
+                                <label class="form-check-label" for="conditionAll">
+                                    All Conditions
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="condition" value="new" id="conditionNew" onchange="applyFilters()">
+                                <label class="form-check-label" for="conditionNew">
+                                    Brand New
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="condition" value="refurbished" id="conditionRefurbished" onchange="applyFilters()">
+                                <label class="form-check-label" for="conditionRefurbished">
+                                    Refurbished
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Category Filter -->
+                        <div class="filter-section">
+                            <h5><i class="fas fa-list me-2"></i>Category</h5>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="laptops" id="catLaptops" onchange="applyFilters()">
+                                <label class="form-check-label" for="catLaptops">
+                                    Laptops <span class="text-muted">(89)</span>
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="phones" id="catPhones" onchange="applyFilters()">
+                                <label class="form-check-label" for="catPhones">
+                                    Smartphones <span class="text-muted">(56)</span>
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="audio" id="catAudio" onchange="applyFilters()">
+                                <label class="form-check-label" for="catAudio">
+                                    Audio <span class="text-muted">(34)</span>
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="storage" id="catStorage" onchange="applyFilters()">
+                                <label class="form-check-label" for="catStorage">
+                                    Storage <span class="text-muted">(42)</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Stock Filter -->
+                        <div class="filter-section">
+                            <h5><i class="fas fa-warehouse me-2"></i>Availability</h5>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="instock" id="inStock" onchange="applyFilters()">
+                                <label class="form-check-label" for="inStock">
+                                    In Stock Only
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Reset Button -->
+                        <button class="btn btn-outline-danger w-100" onclick="resetFilters()">
+                            <i class="fas fa-redo me-2"></i>Reset All Filters
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Product Grid -->
+                <div class="col-lg-9">
+                    <!-- Search & Sort Bar -->
+                    <div class="search-sort-bar">
+                        <div class="row align-items-center">
+                            <div class="col-md-6">
+                                <p class="result-count m-0">Showing <span id="resultCount">0</span> products</p>
+                            </div>
+                            <div class="col-md-6 text-md-end mt-3 mt-md-0">
+                                <select class="form-select d-inline-block" style="width: auto;" id="sortSelect" onchange="sortProducts()">
+                                    <option value="newest">Newest First</option>
+                                    <option value="price-low">Price: Low to High</option>
+                                    <option value="price-high">Price: High to Low</option>
+                                    <option value="rating">Highest Rated</option>
+                                    <option value="popular">Most Popular</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Products Grid -->
+                    <div class="row g-4" id="productsGrid">
+                        <!-- Products will be loaded here dynamically -->
+                    </div>
+
+                    <!-- Pagination -->
+                    <div class="d-flex justify-content-center mt-5" id="pagination">
+                        <!-- Pagination will be loaded here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript Libraries -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.7.1/nouislider.min.js"></script>
+    <script src="js/cart-manager.js"></script>
+
+    <script>
+        // Configuration
+        const API_BASE_URL = 'http://localhost:5000/api'; // Change to your backend URL
+        let currentPage = 1;
+        const productsPerPage = 12;
+
+        // Sample product data (replace with API calls)
+        const sampleProducts = [
+            {
+                id: 1,
+                name: 'HP Pavilion 15 Laptop - Intel Core i7, 16GB RAM, 512GB SSD',
+                brand: 'HP',
+                price: 159999,
+                oldPrice: 185000,
+                rating: 4.5,
+                reviews: 124,
+                image: 'img/product-1.png',
+                condition: 'new',
+                category: 'laptops',
+                inStock: true,
+                isNew: true,
+                specs: { ram: '16GB', storage: '512GB SSD', processor: 'Intel Core i7 11th Gen' }
+            },
+            {
+                id: 2,
+                name: 'Dell XPS 13 Ultrabook - 11th Gen i5, 8GB RAM, 256GB SSD',
+                brand: 'Dell',
+                price: 129999,
+                oldPrice: 149999,
+                rating: 4.7,
+                reviews: 89,
+                image: 'img/product-2.png',
+                condition: 'new',
+                category: 'laptops',
+                inStock: true,
+                isNew: false
+            },
+            {
+                id: 3,
+                name: 'Apple MacBook Air M2 - 8GB RAM, 512GB SSD',
+                brand: 'Apple',
+                price: 189999,
+                oldPrice: null,
+                rating: 4.9,
+                reviews: 256,
+                image: 'img/product-3.png',
+                condition: 'new',
+                category: 'laptops',
+                inStock: true,
+                isNew: true
+            },
+            {
+                id: 4,
+                name: 'Lenovo ThinkPad E14 - Refurbished - i5, 8GB, 256GB',
+                brand: 'Lenovo',
+                price: 54999,
+                oldPrice: 75000,
+                rating: 4.2,
+                reviews: 43,
+                image: 'img/product-4.png',
+                condition: 'refurbished',
+                category: 'laptops',
+                inStock: true,
+                isNew: false
+            },
+            {
+                id: 5,
+                name: 'Samsung Galaxy S23 Ultra - 256GB, 12GB RAM',
+                brand: 'Samsung',
+                price: 149999,
+                oldPrice: 169999,
+                rating: 4.8,
+                reviews: 189,
+                image: 'img/product-5.png',
+                condition: 'new',
+                category: 'phones',
+                inStock: true,
+                isNew: true
+            },
+            {
+                id: 6,
+                name: 'Apple AirPods Pro (2nd Generation)',
+                brand: 'Apple',
+                price: 42999,
+                oldPrice: null,
+                rating: 4.6,
+                reviews: 321,
+                image: 'img/product-6.png',
+                condition: 'new',
+                category: 'audio',
+                inStock: true,
+                isNew: false
+            }
+        ];
+
+        // Initialize price range slider
+        const priceSlider = document.getElementById('priceRange');
+        noUiSlider.create(priceSlider, {
+            start: [10000, 200000],
+            connect: true,
+            range: {
+                'min': 10000,
+                'max': 200000
+            },
+            step: 5000,
+            format: {
+                to: value => 'KSh ' + Math.round(value).toLocaleString(),
+                from: value => Number(value.replace(/[^0-9.-]+/g, ''))
+            }
+        });
+
+        priceSlider.noUiSlider.on('update', (values, handle) => {
+            document.getElementById('minPrice').value = values[0];
+            document.getElementById('maxPrice').value = values[1];
+        });
+
+        priceSlider.noUiSlider.on('change', applyFilters);
+
+        // Toggle mobile filters
+        function toggleFilters() {
+            document.getElementById('filterSidebar').classList.toggle('show');
+            document.querySelector('.filter-overlay').classList.toggle('show');
+        }
+
+        // Apply filters
+        function applyFilters() {
+            const filters = getActiveFilters();
+            loadProducts(filters);
+        }
+
+        // Get active filters
+        function getActiveFilters() {
+            const priceValues = priceSlider.noUiSlider.get();
+            const minPrice = parseInt(priceValues[0].replace(/[^0-9]/g, ''));
+            const maxPrice = parseInt(priceValues[1].replace(/[^0-9]/g, ''));
+
+            const brands = [];
+            document.querySelectorAll('[id^="brand"]:checked').forEach(cb => {
+                brands.push(cb.value);
+            });
+
+            const categories = [];
+            document.querySelectorAll('[id^="cat"]:checked').forEach(cb => {
+                categories.push(cb.value);
+            });
+
+            const condition = document.querySelector('input[name="condition"]:checked').value;
+            const inStock = document.getElementById('inStock').checked;
+
+            return { minPrice, maxPrice, brands, categories, condition, inStock };
+        }
+
+        // Load products
+        function loadProducts(filters = {}) {
+            const grid = document.getElementById('productsGrid');
+            grid.innerHTML = '<div class="col-12 text-center py-5"><div class="spinner-border text-primary" role="status"></div></div>';
+
+            // Filter products (replace with API call)
+            setTimeout(() => {
+                let filtered = [...sampleProducts];
+
+                // Apply price filter
+                if (filters.minPrice || filters.maxPrice) {
+                    filtered = filtered.filter(p => 
+                        p.price >= (filters.minPrice || 0) && 
+                        p.price <= (filters.maxPrice || Infinity)
+                    );
+                }
+
+                // Apply brand filter
+                if (filters.brands && filters.brands.length > 0) {
+                    filtered = filtered.filter(p => filters.brands.includes(p.brand));
+                }
+
+                // Apply category filter
+                if (filters.categories && filters.categories.length > 0) {
+                    filtered = filtered.filter(p => filters.categories.includes(p.category));
+                }
+
+                // Apply condition filter
+                if (filters.condition && filters.condition !== 'all') {
+                    filtered = filtered.filter(p => p.condition === filters.condition);
+                }
+
+                // Apply stock filter
+                if (filters.inStock) {
+                    filtered = filtered.filter(p => p.inStock);
+                }
+
+                displayProducts(filtered);
+            }, 500);
+        }
+
+        // Display products
+        function displayProducts(products) {
+            const grid = document.getElementById('productsGrid');
+            document.getElementById('resultCount').textContent = products.length;
+
+            if (products.length === 0) {
+                grid.innerHTML = `
+                    <div class="col-12 text-center py-5">
+                        <i class="fas fa-box-open fa-5x text-muted mb-3"></i>
+                        <h4>No products found</h4>
+                        <p class="text-muted">Try adjusting your filters</p>
+                    </div>
+                `;
+                return;
+            }
+
+            grid.innerHTML = products.map(product => `
+                <div class="col-md-6 col-lg-4">
+                    <div class="product-card">
+                        <div class="product-image">
+                            <img src="${product.image}" alt="${product.name}">
+                            <div class="product-badges">
+                                ${product.isNew ? '<span class="badge-new">NEW</span>' : ''}
+                                ${product.oldPrice ? '<span class="badge-sale">SALE</span>' : ''}
+                                ${product.condition === 'refurbished' ? '<span class="badge-refurbished">Refurbished</span>' : ''}
+                            </div>
+                            <div class="product-actions">
+                                <button class="action-btn" onclick="addToWishlist(${product.id})" title="Add to Wishlist">
+                                    <i class="fas fa-heart"></i>
+                                </button>
+                                <button class="action-btn" onclick="quickView(${product.id})" title="Quick View">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="product-info">
+                            <div class="product-brand">${product.brand}</div>
+                            <h5 class="product-title">${product.name}</h5>
+                            <div class="product-rating">
+                                <div class="rating-stars">
+                                    ${generateStars(product.rating)}
+                                </div>
+                                <span class="rating-count">(${product.reviews})</span>
+                            </div>
+                            <div class="product-price">
+                                <span class="current-price">KSh ${product.price.toLocaleString()}</span>
+                                ${product.oldPrice ? `<span class="old-price">KSh ${product.oldPrice.toLocaleString()}</span>` : ''}
+                            </div>
+                        </div>
+                        <div class="product-footer">
+                            <button class="btn btn-primary btn-add-cart" onclick="addToCart(${product.id})">
+                                <i class="fas fa-shopping-cart me-2"></i>Add to Cart
+                            </button>
+                            <a href="product-detail.html?id=${product.id}" class="btn btn-quick-view">
+                                <i class="fas fa-info-circle"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Generate star rating HTML
+        function generateStars(rating) {
+            const fullStars = Math.floor(rating);
+            const halfStar = rating % 1 >= 0.5;
+            const emptyStars = 5 - fullStars - (halfStar ? 1 : 0);
+
+            let html = '';
+            for (let i = 0; i < fullStars; i++) html += '<i class="fas fa-star"></i>';
+            if (halfStar) html += '<i class="fas fa-star-half-alt"></i>';
+            for (let i = 0; i < emptyStars; i++) html += '<i class="far fa-star"></i>';
+
+            return html;
+        }
+
+        // Search products
+        function searchProducts() {
+            const keyword = document.getElementById('searchInput').value;
+            // TODO: Implement API search call
+            console.log('Searching for:', keyword);
+        }
+
+        // Sort products
+        function sortProducts() {
+            const sortValue = document.getElementById('sortSelect').value;
+            // TODO: Implement sorting logic
+            console.log('Sorting by:', sortValue);
+        }
+
+        // Reset filters
+        function resetFilters() {
+            priceSlider.noUiSlider.set([10000, 200000]);
+            document.querySelectorAll('.form-check-input').forEach(input => {
+                if (input.type === 'checkbox') {
+                    input.checked = false;
+                } else if (input.type === 'radio' && input.id === 'conditionAll') {
+                    input.checked = true;
+                }
+            });
+            applyFilters();
+        }
+
+        // Add to cart
+        function addToCart(productId) {
+            const product = sampleProducts.find(p => p.id === productId);
+            if (product) {
+                window.cartManager.addItem(product, 1);
+            }
+        }
+
+        // Add to wishlist
+        function addToWishlist(productId) {
+            const product = sampleProducts.find(p => p.id === productId);
+            if (product) {
+                window.cartManager.showNotification('Added to wishlist', `${product.name} saved for later`, 'success');
+            }
+        }
+
+        // Quick view
+        function quickView(productId) {
+            window.location.href = `product-detail.html?id=${productId}`;
+        }
+
+        // Initialize on page load
+        window.addEventListener('DOMContentLoaded', () => {
+            loadProducts();
+        });
+    </script>
+</body>
+
+</html>

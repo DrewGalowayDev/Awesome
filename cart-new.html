@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Shopping Cart - Awesome Technologies</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="" name="keywords">
+    <meta content="" name="description">
+
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <!-- Icon Font Stylesheet -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css"/>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Template Stylesheet -->
+    <link href="css/style.css" rel="stylesheet">
+
+    <style>
+        /* Cart Styles */
+        .cart-container {
+            min-height: 70vh;
+        }
+
+        .cart-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px 0;
+            margin-bottom: 30px;
+        }
+
+        .cart-item {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.08);
+            transition: all 0.3s;
+        }
+
+        .cart-item:hover {
+            box-shadow: 0 5px 25px rgba(0,0,0,0.12);
+        }
+
+        .cart-item-image {
+            width: 120px;
+            height: 120px;
+            object-fit: contain;
+            border-radius: 8px;
+            background: #f8f9fa;
+            padding: 10px;
+        }
+
+        .cart-item-details h5 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .cart-item-brand {
+            color: #999;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+        }
+
+        .cart-item-specs {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+        }
+
+        .quantity-control {
+            display: inline-flex;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .quantity-btn {
+            background: #f8f9fa;
+            border: none;
+            padding: 8px 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+
+        .quantity-btn:hover {
+            background: var(--bs-primary);
+            color: white;
+        }
+
+        .quantity-value {
+            padding: 8px 20px;
+            border: none;
+            text-align: center;
+            font-weight: 600;
+            min-width: 60px;
+        }
+
+        .item-price {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--bs-primary);
+        }
+
+        .item-old-price {
+            text-decoration: line-through;
+            color: #999;
+            font-size: 1rem;
+            margin-left: 10px;
+        }
+
+        .btn-remove {
+            color: #dc3545;
+            background: #fff5f5;
+            border: 1px solid #ffcccc;
+            padding: 8px 15px;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+
+        .btn-remove:hover {
+            background: #dc3545;
+            color: white;
+        }
+
+        /* Cart Summary */
+        .cart-summary {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.08);
+            position: sticky;
+            top: 20px;
+        }
+
+        .cart-summary h4 {
+            font-weight: 700;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            font-size: 1rem;
+        }
+
+        .summary-row.total {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--bs-primary);
+            padding-top: 15px;
+            border-top: 2px solid #f0f0f0;
+            margin-top: 20px;
+        }
+
+        .btn-whatsapp-checkout {
+            background: #25D366;
+            color: white;
+            width: 100%;
+            padding: 15px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 10px;
+            margin-top: 20px;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(37, 211, 102, 0.3);
+        }
+
+        .btn-whatsapp-checkout:hover {
+            background: #1ea952;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(37, 211, 102, 0.4);
+        }
+
+        .btn-continue-shopping {
+            width: 100%;
+            padding: 12px;
+            margin-top: 15px;
+            border-radius: 10px;
+        }
+
+        .empty-cart {
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .empty-cart i {
+            font-size: 6rem;
+            color: #ddd;
+            margin-bottom: 20px;
+        }
+
+        .savings-badge {
+            background: #28a745;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            display: inline-block;
+            margin-top: 10px;
+        }
+
+        .promo-code-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .promo-input-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        .promo-input-group input {
+            flex: 1;
+            padding: 10px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+        }
+
+        .promo-input-group button {
+            padding: 10px 25px;
+            border-radius: 8px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .cart-item {
+                padding: 15px;
+            }
+
+            .cart-item-image {
+                width: 80px;
+                height: 80px;
+            }
+
+            .item-price {
+                font-size: 1.2rem;
+            }
+
+            .quantity-control {
+                width: 100%;
+                justify-content: center;
+                margin: 10px 0;
+            }
+        }
+
+        /* Animation for item removal */
+        @keyframes fadeOut {
+            to {
+                opacity: 0;
+                transform: translateX(100%);
+            }
+        }
+
+        .removing {
+            animation: fadeOut 0.5s ease forwards;
+        }
+
+        /* Success notification */
+        .toast-notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 25px rgba(0,0,0,0.2);
+            z-index: 9999;
+            display: none;
+        }
+
+        .toast-notification.show {
+            display: block;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Topbar Start -->
+    <div class="container-fluid px-5 d-none border-bottom d-lg-block">
+        <div class="row gx-0 align-items-center">
+            <div class="col-lg-4 text-center text-lg-start mb-lg-0">
+                <div class="d-inline-flex align-items-center" style="height: 45px;">
+                    <a href="#" class="text-muted me-2">Help</a><small> / </small>
+                    <a href="#" class="text-muted mx-2">Support</a><small> / </small>
+                    <a href="#" class="text-muted ms-2">Contact</a>
+                </div>
+            </div>
+            <div class="col-lg-4 text-center d-flex align-items-center justify-content-center">
+                <small class="text-dark">Call Us:</small>
+                <a href="tel:+254704546916" class="text-muted">+254 704546916</a>
+            </div>
+            <div class="col-lg-4 text-center text-lg-end">
+                <div class="d-inline-flex align-items-center" style="height: 45px;">
+                    <div class="dropdown">
+                        <a href="#" class="dropdown-toggle text-muted me-2" data-bs-toggle="dropdown"><small>KSh</small></a>
+                        <div class="dropdown-menu rounded">
+                            <a href="#" class="dropdown-item">KSh - Kenyan Shilling</a>
+                        </div>
+                    </div>
+                    <div class="dropdown">
+                        <a href="#" class="dropdown-toggle text-muted ms-2" data-bs-toggle="dropdown"><small><i class="fa fa-home me-2"></i>My Dashboard</small></a>
+                        <div class="dropdown-menu rounded">
+                            <a href="dashboard.html" class="dropdown-item">Dashboard</a>
+                            <a href="#" class="dropdown-item">Wishlist</a>
+                            <a href="cart-new.html" class="dropdown-item">My Cart</a>
+                            <a href="#" class="dropdown-item">Account Settings</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Header Start -->
+    <div class="container-fluid px-5 py-4 d-none d-lg-block">
+        <div class="row gx-7 align-items-center">
+            <div class="col-lg-2 pe-4">
+                <a href="index.html" class="navbar-brand">
+                    <h4 class="text-primary m-0"><i class="fas fa-laptop text-secondary me-2"></i>Awesome Tech</h4>
+                </a>
+            </div>
+            <div class="col-lg-6 ps-3">
+                <div class="position-relative" style="max-width: 650px; margin: 0 auto;">
+                    <div class="d-flex border rounded-pill">
+                        <input class="form-control border-0 rounded-pill w-100 py-3" type="text" placeholder="Search for laptops, phones, accessories...">
+                        <button type="button" class="btn btn-primary rounded-pill py-3 px-5">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 text-end">
+                <div class="d-inline-flex align-items-center">
+                    <a href="#" class="text-muted me-3"><i class="fas fa-heart fa-lg"></i></a>
+                    <a href="cart-new.html" class="text-muted"><i class="fas fa-shopping-cart fa-lg"></i> <span class="badge bg-primary" id="headerCartCount">0</span></a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Header End -->
+
+    <!-- Cart Header -->
+    <div class="cart-header">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <h2 class="mb-0"><i class="fas fa-shopping-cart me-3"></i>Shopping Cart</h2>
+                </div>
+                <div class="col-md-6 text-md-end mt-3 mt-md-0">
+                    <span class="badge bg-light text-dark px-3 py-2" style="font-size: 1rem;">
+                        <span id="cartItemCount">0</span> Items
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cart Content -->
+    <div class="container cart-container py-5">
+        <div class="row g-4">
+            <!-- Cart Items -->
+            <div class="col-lg-8">
+                <!-- Empty Cart Message -->
+                <div id="emptyCart" class="empty-cart" style="display: none;">
+                    <i class="fas fa-shopping-cart"></i>
+                    <h3>Your cart is empty</h3>
+                    <p class="text-muted">Add some amazing products to get started!</p>
+                    <a href="shop-new.html" class="btn btn-primary btn-lg rounded-pill px-5 mt-3">
+                        <i class="fas fa-shopping-bag me-2"></i>Start Shopping
+                    </a>
+                </div>
+
+                <!-- Cart Items Container -->
+                <div id="cartItemsContainer">
+                    <!-- Items will be loaded here dynamically -->
+                </div>
+            </div>
+
+            <!-- Cart Summary -->
+            <div class="col-lg-4">
+                <div class="cart-summary">
+                    <h4><i class="fas fa-receipt me-2"></i>Order Summary</h4>
+
+                    <!-- Promo Code Section -->
+                    <div class="promo-code-section">
+                        <label class="form-label fw-bold">Have a promo code?</label>
+                        <div class="promo-input-group">
+                            <input type="text" class="form-control" id="promoCode" placeholder="Enter code">
+                            <button class="btn btn-outline-primary" onclick="applyPromoCode()">Apply</button>
+                        </div>
+                    </div>
+
+                    <div class="summary-row">
+                        <span>Subtotal:</span>
+                        <span id="subtotal">KSh 0</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Discount:</span>
+                        <span id="discount" class="text-success">- KSh 0</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Delivery:</span>
+                        <span id="delivery">Free</span>
+                    </div>
+                    <div class="summary-row total">
+                        <span>Total:</span>
+                        <span id="total">KSh 0</span>
+                    </div>
+
+                    <div id="savingsInfo" style="display: none;">
+                        <div class="savings-badge">
+                            <i class="fas fa-tag me-2"></i>You save KSh <span id="savingsAmount">0</span>
+                        </div>
+                    </div>
+
+                    <!-- WhatsApp Checkout Button -->
+                    <button class="btn-whatsapp-checkout" onclick="checkoutViaWhatsApp()">
+                        <i class="fab fa-whatsapp fa-lg me-2"></i>
+                        Checkout via WhatsApp
+                    </button>
+
+                    <button class="btn btn-outline-primary btn-continue-shopping" onclick="window.location.href='shop-new.html'">
+                        <i class="fas fa-arrow-left me-2"></i>Continue Shopping
+                    </button>
+
+                    <!-- Trust Badges -->
+                    <div class="mt-4 pt-4 border-top">
+                        <div class="row g-3 text-center">
+                            <div class="col-6">
+                                <i class="fas fa-shield-alt text-primary fa-2x mb-2"></i>
+                                <small class="d-block">Secure Payment</small>
+                            </div>
+                            <div class="col-6">
+                                <i class="fas fa-truck text-primary fa-2x mb-2"></i>
+                                <small class="d-block">Fast Delivery</small>
+                            </div>
+                            <div class="col-6">
+                                <i class="fas fa-undo text-primary fa-2x mb-2"></i>
+                                <small class="d-block">Easy Returns</small>
+                            </div>
+                            <div class="col-6">
+                                <i class="fas fa-headset text-primary fa-2x mb-2"></i>
+                                <small class="d-block">24/7 Support</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast-notification" id="toastNotification">
+        <div class="d-flex align-items-center">
+            <i class="fas fa-check-circle text-success fa-2x me-3"></i>
+            <div>
+                <strong id="toastTitle">Success!</strong>
+                <p class="mb-0 text-muted" id="toastMessage">Action completed successfully</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript Libraries -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        // Configuration
+        const WHATSAPP_BUSINESS_NUMBER = '+254704546916';
+        const STORAGE_KEY = 'awesomeTech_cart';
+        const DELIVERY_FEE = 0; // Free delivery
+        
+        // Cart Management Class
+        class ShoppingCart {
+            constructor() {
+                this.items = this.loadCart();
+                this.render();
+            }
+
+            // Load cart from localStorage
+            loadCart() {
+                try {
+                    const saved = localStorage.getItem(STORAGE_KEY);
+                    return saved ? JSON.parse(saved) : [];
+                } catch (error) {
+                    console.error('Error loading cart:', error);
+                    return [];
+                }
+            }
+
+            // Save cart to localStorage
+            saveCart() {
+                try {
+                    localStorage.setItem(STORAGE_KEY, JSON.stringify(this.items));
+                    this.updateCartCount();
+                } catch (error) {
+                    console.error('Error saving cart:', error);
+                }
+            }
+
+            // Add item to cart
+            addItem(product) {
+                const existingItem = this.items.find(item => item.id === product.id);
+                
+                if (existingItem) {
+                    existingItem.quantity += 1;
+                } else {
+                    this.items.push({
+                        ...product,
+                        quantity: 1
+                    });
+                }
+                
+                this.saveCart();
+                this.render();
+                this.showNotification('Item added to cart!', 'Product successfully added');
+            }
+
+            // Update item quantity
+            updateQuantity(productId, newQuantity) {
+                if (newQuantity < 1) {
+                    this.removeItem(productId);
+                    return;
+                }
+
+                const item = this.items.find(item => item.id === productId);
+                if (item) {
+                    item.quantity = newQuantity;
+                    this.saveCart();
+                    this.render();
+                }
+            }
+
+            // Remove item from cart
+            removeItem(productId) {
+                const itemElement = document.querySelector(`[data-product-id="${productId}"]`);
+                if (itemElement) {
+                    itemElement.classList.add('removing');
+                    setTimeout(() => {
+                        this.items = this.items.filter(item => item.id !== productId);
+                        this.saveCart();
+                        this.render();
+                        this.showNotification('Item removed', 'Product removed from cart');
+                    }, 500);
+                }
+            }
+
+            // Clear entire cart
+            clearCart() {
+                if (confirm('Are you sure you want to clear your cart?')) {
+                    this.items = [];
+                    this.saveCart();
+                    this.render();
+                    this.showNotification('Cart cleared', 'All items removed from cart');
+                }
+            }
+
+            // Calculate totals
+            calculateTotals() {
+                const subtotal = this.items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+                const discount = this.items.reduce((sum, item) => {
+                    if (item.oldPrice) {
+                        return sum + ((item.oldPrice - item.price) * item.quantity);
+                    }
+                    return sum;
+                }, 0);
+                const delivery = DELIVERY_FEE;
+                const total = subtotal + delivery;
+
+                return { subtotal, discount, delivery, total };
+            }
+
+            // Update cart count badge
+            updateCartCount() {
+                const count = this.items.reduce((sum, item) => sum + item.quantity, 0);
+                document.getElementById('cartItemCount').textContent = count;
+                document.getElementById('headerCartCount').textContent = count;
+            }
+
+            // Render cart
+            render() {
+                const container = document.getElementById('cartItemsContainer');
+                const emptyCart = document.getElementById('emptyCart');
+                
+                if (this.items.length === 0) {
+                    container.innerHTML = '';
+                    emptyCart.style.display = 'block';
+                    this.updateCartCount();
+                    this.updateSummary();
+                    return;
+                }
+
+                emptyCart.style.display = 'none';
+                
+                container.innerHTML = this.items.map(item => `
+                    <div class="cart-item" data-product-id="${item.id}">
+                        <div class="row align-items-center g-3">
+                            <div class="col-md-2 col-3">
+                                <img src="${item.image}" alt="${item.name}" class="cart-item-image">
+                            </div>
+                            <div class="col-md-4 col-9">
+                                <div class="cart-item-details">
+                                    <div class="cart-item-brand">${item.brand}</div>
+                                    <h5>${item.name}</h5>
+                                    ${item.specs ? `
+                                        <div class="cart-item-specs">
+                                            <small><i class="fas fa-microchip me-1"></i>${item.specs.processor || 'N/A'}</small><br>
+                                            <small><i class="fas fa-memory me-1"></i>${item.specs.ram || 'N/A'} | ${item.specs.storage || 'N/A'}</small>
+                                        </div>
+                                    ` : ''}
+                                </div>
+                            </div>
+                            <div class="col-md-2 col-6">
+                                <div class="quantity-control">
+                                    <button class="quantity-btn" onclick="cart.updateQuantity(${item.id}, ${item.quantity - 1})">
+                                        <i class="fas fa-minus"></i>
+                                    </button>
+                                    <input type="number" class="quantity-value" value="${item.quantity}" readonly>
+                                    <button class="quantity-btn" onclick="cart.updateQuantity(${item.id}, ${item.quantity + 1})">
+                                        <i class="fas fa-plus"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-4">
+                                <div class="item-price">
+                                    KSh ${(item.price * item.quantity).toLocaleString()}
+                                </div>
+                                ${item.oldPrice ? `
+                                    <div class="item-old-price">
+                                        KSh ${(item.oldPrice * item.quantity).toLocaleString()}
+                                    </div>
+                                ` : ''}
+                            </div>
+                            <div class="col-md-1 col-2 text-end">
+                                <button class="btn-remove" onclick="cart.removeItem(${item.id})" title="Remove item">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+
+                this.updateCartCount();
+                this.updateSummary();
+            }
+
+            // Update summary section
+            updateSummary() {
+                const { subtotal, discount, delivery, total } = this.calculateTotals();
+
+                document.getElementById('subtotal').textContent = `KSh ${subtotal.toLocaleString()}`;
+                document.getElementById('discount').textContent = discount > 0 ? `- KSh ${discount.toLocaleString()}` : 'KSh 0';
+                document.getElementById('delivery').textContent = delivery === 0 ? 'Free' : `KSh ${delivery.toLocaleString()}`;
+                document.getElementById('total').textContent = `KSh ${total.toLocaleString()}`;
+
+                // Show savings badge if there's a discount
+                const savingsInfo = document.getElementById('savingsInfo');
+                if (discount > 0) {
+                    document.getElementById('savingsAmount').textContent = discount.toLocaleString();
+                    savingsInfo.style.display = 'block';
+                } else {
+                    savingsInfo.style.display = 'none';
+                }
+            }
+
+            // Generate WhatsApp message
+            generateWhatsAppMessage() {
+                if (this.items.length === 0) {
+                    alert('Your cart is empty!');
+                    return null;
+                }
+
+                const { subtotal, discount, total } = this.calculateTotals();
+                
+                let message = "Hello! I would like to order:\n\n";
+                
+                // Add each item
+                this.items.forEach((item, index) => {
+                    message += `${index + 1}. ${item.quantity}x ${item.name} (${item.brand})`;
+                    message += ` - KSh ${(item.price * item.quantity).toLocaleString()}`;
+                    if (item.specs) {
+                        message += `\n   Specs: ${item.specs.processor || ''}, ${item.specs.ram || ''}, ${item.specs.storage || ''}`;
+                    }
+                    message += "\n\n";
+                });
+
+                // Add pricing summary
+                message += "═══════════════════\n";
+                message += `Subtotal: KSh ${subtotal.toLocaleString()}\n`;
+                if (discount > 0) {
+                    message += `Discount: - KSh ${discount.toLocaleString()}\n`;
+                }
+                message += `Delivery: Free\n`;
+                message += `═══════════════════\n`;
+                message += `*Total: KSh ${total.toLocaleString()}*\n\n`;
+                message += "Is this available? When can I expect delivery?";
+
+                return message;
+            }
+
+            // Checkout via WhatsApp
+            checkoutViaWhatsApp() {
+                const message = this.generateWhatsAppMessage();
+                if (!message) return;
+
+                const encodedMessage = encodeURIComponent(message);
+                const whatsappUrl = `https://wa.me/${WHATSAPP_BUSINESS_NUMBER.replace('+', '')}?text=${encodedMessage}`;
+                
+                // Open WhatsApp in new window
+                window.open(whatsappUrl, '_blank');
+                
+                // Optional: Show confirmation
+                this.showNotification('Redirecting to WhatsApp', 'Your order details have been prepared!');
+            }
+
+            // Show notification
+            showNotification(title, message) {
+                const toast = document.getElementById('toastNotification');
+                document.getElementById('toastTitle').textContent = title;
+                document.getElementById('toastMessage').textContent = message;
+                
+                toast.classList.add('show');
+                
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                }, 3000);
+            }
+        }
+
+        // Initialize cart
+        const cart = new ShoppingCart();
+
+        // Global functions
+        function checkoutViaWhatsApp() {
+            cart.checkoutViaWhatsApp();
+        }
+
+        function applyPromoCode() {
+            const code = document.getElementById('promoCode').value.trim();
+            if (!code) {
+                alert('Please enter a promo code');
+                return;
+            }
+            
+            // TODO: Implement promo code validation
+            cart.showNotification('Promo code', 'This feature is coming soon!');
+        }
+
+        // Export cart for use in other pages
+        window.ShoppingCart = ShoppingCart;
+        window.cart = cart;
+
+        // Add sample products for testing (Remove in production)
+        window.addSampleProducts = function() {
+            const sampleProducts = [
+                {
+                    id: 1,
+                    name: 'HP Pavilion 15 Laptop - Intel Core i7, 16GB RAM, 512GB SSD',
+                    brand: 'HP',
+                    price: 159999,
+                    oldPrice: 185000,
+                    image: 'img/product-1.png',
+                    specs: { ram: '16GB', storage: '512GB SSD', processor: 'Intel Core i7 11th Gen' }
+                },
+                {
+                    id: 2,
+                    name: 'Dell XPS 13 Ultrabook',
+                    brand: 'Dell',
+                    price: 129999,
+                    oldPrice: 149999,
+                    image: 'img/product-2.png',
+                    specs: { ram: '8GB', storage: '256GB SSD', processor: 'Intel Core i5 11th Gen' }
+                }
+            ];
+
+            sampleProducts.forEach(product => cart.addItem(product));
+        };
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cart System Demo - Awesome Technologies</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css"/>
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 50px 0;
+        }
+        .demo-card {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+        .feature-box {
+            border: 2px solid #e0e0e0;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 20px;
+            transition: all 0.3s;
+        }
+        .feature-box:hover {
+            border-color: #667eea;
+            transform: translateY(-5px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+        .btn-demo {
+            padding: 15px 30px;
+            font-size: 1.1rem;
+            border-radius: 10px;
+            margin: 10px;
+        }
+        .cart-badge-demo {
+            position: relative;
+            display: inline-block;
+        }
+        .badge-count {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            background: #dc3545;
+            color: white;
+            border-radius: 50%;
+            padding: 5px 10px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="demo-card">
+            <div class="text-center mb-5">
+                <h1 class="display-4 mb-3">
+                    <i class="fas fa-laptop text-primary me-3"></i>
+                    Awesome Technologies
+                </h1>
+                <h2 class="h3 text-muted mb-4">Shopping Cart System Demo</h2>
+                <div class="cart-badge-demo">
+                    <i class="fas fa-shopping-cart fa-3x text-primary"></i>
+                    <span class="badge-count" id="demoCartBadge">0</span>
+                </div>
+            </div>
+
+            <!-- Quick Test Section -->
+            <div class="feature-box bg-light">
+                <h3><i class="fas fa-rocket text-success me-2"></i>Quick Test</h3>
+                <p class="text-muted">Add sample products and test the cart system instantly</p>
+                <button class="btn btn-success btn-demo" onclick="addSampleProducts()">
+                    <i class="fas fa-plus me-2"></i>Add Sample Products
+                </button>
+                <button class="btn btn-primary btn-demo" onclick="viewCart()">
+                    <i class="fas fa-shopping-cart me-2"></i>View Cart (<span id="cartCount1">0</span>)
+                </button>
+            </div>
+
+            <!-- Add Individual Products -->
+            <div class="feature-box">
+                <h3><i class="fas fa-laptop text-primary me-2"></i>Add Products Manually</h3>
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <button class="btn btn-outline-primary w-100 btn-demo" onclick="addProduct1()">
+                            <i class="fas fa-plus me-2"></i>HP Pavilion 15 Laptop<br>
+                            <small>KSh 159,999</small>
+                        </button>
+                    </div>
+                    <div class="col-md-6">
+                        <button class="btn btn-outline-primary w-100 btn-demo" onclick="addProduct2()">
+                            <i class="fas fa-plus me-2"></i>Dell XPS 13 Ultrabook<br>
+                            <small>KSh 129,999</small>
+                        </button>
+                    </div>
+                    <div class="col-md-6">
+                        <button class="btn btn-outline-primary w-100 btn-demo" onclick="addProduct3()">
+                            <i class="fas fa-plus me-2"></i>MacBook Air M2<br>
+                            <small>KSh 189,999</small>
+                        </button>
+                    </div>
+                    <div class="col-md-6">
+                        <button class="btn btn-outline-primary w-100 btn-demo" onclick="addProduct4()">
+                            <i class="fas fa-plus me-2"></i>Samsung Galaxy S23<br>
+                            <small>KSh 149,999</small>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cart Actions -->
+            <div class="feature-box">
+                <h3><i class="fas fa-cog text-warning me-2"></i>Cart Management</h3>
+                <button class="btn btn-info btn-demo" onclick="showCartInfo()">
+                    <i class="fas fa-info-circle me-2"></i>Show Cart Info
+                </button>
+                <button class="btn btn-warning btn-demo" onclick="showCartSummary()">
+                    <i class="fas fa-calculator me-2"></i>Calculate Totals
+                </button>
+                <button class="btn btn-danger btn-demo" onclick="clearCart()">
+                    <i class="fas fa-trash me-2"></i>Clear Cart
+                </button>
+            </div>
+
+            <!-- WhatsApp Checkout -->
+            <div class="feature-box bg-success bg-opacity-10">
+                <h3><i class="fab fa-whatsapp text-success me-2"></i>WhatsApp Checkout</h3>
+                <p class="text-muted">Test the WhatsApp checkout feature with your cart items</p>
+                <button class="btn btn-success btn-demo btn-lg" onclick="testWhatsAppCheckout()">
+                    <i class="fab fa-whatsapp me-2"></i>Checkout via WhatsApp
+                </button>
+                <p class="small text-muted mt-3 mb-0">
+                    <i class="fas fa-phone me-2"></i>Business Number: +254 704546916
+                </p>
+            </div>
+
+            <!-- Cart Info Display -->
+            <div id="cartInfoBox" class="feature-box bg-info bg-opacity-10" style="display: none;">
+                <h3><i class="fas fa-shopping-bag text-info me-2"></i>Current Cart Contents</h3>
+                <div id="cartInfoContent"></div>
+            </div>
+
+            <!-- Navigation Links -->
+            <div class="text-center mt-5">
+                <h4 class="mb-4">Navigate to Pages</h4>
+                <a href="index.html" class="btn btn-outline-primary btn-demo">
+                    <i class="fas fa-home me-2"></i>Home
+                </a>
+                <a href="shop-new.html" class="btn btn-outline-primary btn-demo">
+                    <i class="fas fa-store me-2"></i>Shop
+                </a>
+                <a href="cart-new.html" class="btn btn-outline-primary btn-demo">
+                    <i class="fas fa-shopping-cart me-2"></i>Cart
+                </a>
+                <a href="product-detail.html?id=1" class="btn btn-outline-primary btn-demo">
+                    <i class="fas fa-laptop me-2"></i>Product Details
+                </a>
+            </div>
+
+            <!-- Features List -->
+            <div class="mt-5 pt-4 border-top">
+                <h4 class="mb-4"><i class="fas fa-check-circle text-success me-2"></i>Features Included</h4>
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <ul class="list-unstyled">
+                            <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Add multiple items to cart</li>
+                            <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Update quantities</li>
+                            <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Remove items</li>
+                            <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Clear entire cart</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <ul class="list-unstyled">
+                            <li class="mb-2"><i class="fas fa-check text-success me-2"></i>LocalStorage persistence</li>
+                            <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Price calculations</li>
+                            <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Discount tracking</li>
+                            <li class="mb-2"><i class="fas fa-check text-success me-2"></i>WhatsApp checkout</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/cart-manager.js"></script>
+    <script>
+        // Sample product data
+        const products = {
+            hp: {
+                id: 1,
+                name: 'HP Pavilion 15 Laptop - Intel Core i7, 16GB RAM, 512GB SSD',
+                brand: 'HP',
+                price: 159999,
+                oldPrice: 185000,
+                image: 'img/product-1.png',
+                specs: { processor: 'Intel Core i7 11th Gen', ram: '16GB', storage: '512GB SSD' }
+            },
+            dell: {
+                id: 2,
+                name: 'Dell XPS 13 Ultrabook - 11th Gen i5, 8GB RAM, 256GB SSD',
+                brand: 'Dell',
+                price: 129999,
+                oldPrice: 149999,
+                image: 'img/product-2.png',
+                specs: { processor: 'Intel Core i5 11th Gen', ram: '8GB', storage: '256GB SSD' }
+            },
+            apple: {
+                id: 3,
+                name: 'Apple MacBook Air M2 - 8GB RAM, 512GB SSD',
+                brand: 'Apple',
+                price: 189999,
+                oldPrice: null,
+                image: 'img/product-3.png',
+                specs: { processor: 'Apple M2', ram: '8GB', storage: '512GB SSD' }
+            },
+            samsung: {
+                id: 5,
+                name: 'Samsung Galaxy S23 Ultra - 256GB, 12GB RAM',
+                brand: 'Samsung',
+                price: 149999,
+                oldPrice: 169999,
+                image: 'img/product-5.png',
+                specs: { processor: 'Snapdragon 8 Gen 2', ram: '12GB', storage: '256GB' }
+            }
+        };
+
+        // Update badge on load
+        window.cartManager.addListener(updateAllBadges);
+        updateAllBadges();
+
+        function updateAllBadges() {
+            const count = window.cartManager.getTotalItems();
+            document.getElementById('demoCartBadge').textContent = count;
+            document.getElementById('cartCount1').textContent = count;
+        }
+
+        function addSampleProducts() {
+            window.cartManager.addItem(products.hp, 1);
+            window.cartManager.addItem(products.dell, 1);
+            window.cartManager.showNotification('Sample Products Added', 'HP and Dell laptops added to cart', 'success');
+        }
+
+        function addProduct1() {
+            window.cartManager.addItem(products.hp, 1);
+        }
+
+        function addProduct2() {
+            window.cartManager.addItem(products.dell, 1);
+        }
+
+        function addProduct3() {
+            window.cartManager.addItem(products.apple, 1);
+        }
+
+        function addProduct4() {
+            window.cartManager.addItem(products.samsung, 1);
+        }
+
+        function viewCart() {
+            window.location.href = 'cart-new.html';
+        }
+
+        function clearCart() {
+            if (confirm('Clear all items from cart?')) {
+                window.cartManager.clearCart();
+            }
+        }
+
+        function showCartInfo() {
+            const items = window.cartManager.getItems();
+            const infoBox = document.getElementById('cartInfoBox');
+            const content = document.getElementById('cartInfoContent');
+
+            if (items.length === 0) {
+                content.innerHTML = '<p class="text-muted">Cart is empty</p>';
+            } else {
+                let html = '<ul class="list-group">';
+                items.forEach(item => {
+                    html += `
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <div>
+                                <strong>${item.name}</strong><br>
+                                <small class="text-muted">Quantity: ${item.quantity}</small>
+                            </div>
+                            <span class="badge bg-primary rounded-pill">KSh ${(item.price * item.quantity).toLocaleString()}</span>
+                        </li>
+                    `;
+                });
+                html += '</ul>';
+                content.innerHTML = html;
+            }
+
+            infoBox.style.display = 'block';
+        }
+
+        function showCartSummary() {
+            const totals = window.cartManager.calculateTotals();
+            const message = `
+📊 Cart Summary:
+
+💰 Subtotal: KSh ${totals.subtotal.toLocaleString()}
+🎉 Discount: KSh ${totals.discount.toLocaleString()}
+🚚 Delivery: ${totals.delivery === 0 ? 'FREE' : 'KSh ' + totals.delivery.toLocaleString()}
+━━━━━━━━━━━━━━━
+✨ TOTAL: KSh ${totals.total.toLocaleString()}
+
+${totals.savings > 0 ? '🎁 You save KSh ' + totals.savings.toLocaleString() + '!' : ''}
+            `.trim();
+
+            alert(message);
+        }
+
+        function testWhatsAppCheckout() {
+            if (window.cartManager.getTotalItems() === 0) {
+                window.cartManager.showNotification('Cart is empty', 'Please add some products first', 'warning');
+                return;
+            }
+            window.cartManager.checkoutViaWhatsApp();
+        }
+    </script>
+</body>
+</html>
