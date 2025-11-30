@@ -1,0 +1,11 @@
+
+==================================================
+ADMIN CREDENTIALS GENERATOR
+==================================================
+Name:     awesometech
+Email:    admin@awesometech.co.ke
+Password: awesometech254
+--------------------------------------------------
+BCRYPT HASH:
+$2a$10$jcGz8DaoDpOV8nK6lWbwu..f.shviTpkBlwxRIEXm7t8dPqEqYSHy
+==================================================

@@ -188,49 +188,28 @@
     <!-- Scripts -->
     <script src="js/cart-manager.js"></script>
     <script>
-        // Sample product data
-        const products = {
-            hp: {
-                id: 1,
-                name: 'HP Pavilion 15 Laptop - Intel Core i7, 16GB RAM, 512GB SSD',
-                brand: 'HP',
-                price: 159999,
-                oldPrice: 185000,
-                image: 'img/product-1.png',
-                specs: { processor: 'Intel Core i7 11th Gen', ram: '16GB', storage: '512GB SSD' }
-            },
-            dell: {
-                id: 2,
-                name: 'Dell XPS 13 Ultrabook - 11th Gen i5, 8GB RAM, 256GB SSD',
-                brand: 'Dell',
-                price: 129999,
-                oldPrice: 149999,
-                image: 'img/product-2.png',
-                specs: { processor: 'Intel Core i5 11th Gen', ram: '8GB', storage: '256GB SSD' }
-            },
-            apple: {
-                id: 3,
-                name: 'Apple MacBook Air M2 - 8GB RAM, 512GB SSD',
-                brand: 'Apple',
-                price: 189999,
-                oldPrice: null,
-                image: 'img/product-3.png',
-                specs: { processor: 'Apple M2', ram: '8GB', storage: '512GB SSD' }
-            },
-            samsung: {
-                id: 5,
-                name: 'Samsung Galaxy S23 Ultra - 256GB, 12GB RAM',
-                brand: 'Samsung',
-                price: 149999,
-                oldPrice: 169999,
-                image: 'img/product-5.png',
-                specs: { processor: 'Snapdragon 8 Gen 2', ram: '12GB', storage: '256GB' }
-            }
-        };
+
+        // Demo uses real products from the API (populated on load)
+        let demoProducts = [];
 
         // Update badge on load
         window.cartManager.addListener(updateAllBadges);
         updateAllBadges();
+
+        async function initDemoProducts() {
+            try {
+                const resp = await fetch('/api/products?limit=8');
+                if (resp.ok) {
+                    const json = await resp.json();
+                    demoProducts = json.products || [];
+                } else {
+                    demoProducts = [];
+                }
+            } catch (err) {
+                console.error('Failed to load demo products', err);
+                demoProducts = [];
+            }
+        }
 
         function updateAllBadges() {
             const count = window.cartManager.getTotalItems();
@@ -238,27 +217,24 @@
             document.getElementById('cartCount1').textContent = count;
         }
 
+        // Add first two demo products from API (if available)
         function addSampleProducts() {
-            window.cartManager.addItem(products.hp, 1);
-            window.cartManager.addItem(products.dell, 1);
-            window.cartManager.showNotification('Sample Products Added', 'HP and Dell laptops added to cart', 'success');
+            if (demoProducts.length === 0) {
+                window.cartManager.showNotification('No demo products', 'No products available. Please upload via admin or visit the shop.', 'warning');
+                return;
+            }
+            if (demoProducts[0]) window.cartManager.addItem(demoProducts[0], 1);
+            if (demoProducts[1]) window.cartManager.addItem(demoProducts[1], 1);
+            window.cartManager.showNotification('Sample Products Added', 'Demo products added from live inventory', 'success');
         }
 
-        function addProduct1() {
-            window.cartManager.addItem(products.hp, 1);
-        }
+        function addProduct1() { if (demoProducts[0]) window.cartManager.addItem(demoProducts[0], 1); }
+        function addProduct2() { if (demoProducts[1]) window.cartManager.addItem(demoProducts[1], 1); }
+        function addProduct3() { if (demoProducts[2]) window.cartManager.addItem(demoProducts[2], 1); }
+        function addProduct4() { if (demoProducts[3]) window.cartManager.addItem(demoProducts[3], 1); }
 
-        function addProduct2() {
-            window.cartManager.addItem(products.dell, 1);
-        }
-
-        function addProduct3() {
-            window.cartManager.addItem(products.apple, 1);
-        }
-
-        function addProduct4() {
-            window.cartManager.addItem(products.samsung, 1);
-        }
+        // Initialize demo products
+        initDemoProducts();
 
         function viewCart() {
             window.location.href = 'cart-new.html';

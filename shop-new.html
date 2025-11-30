@@ -627,94 +627,8 @@
         let currentPage = 1;
         const productsPerPage = 12;
 
-        // Sample product data (replace with API calls)
-        const sampleProducts = [
-            {
-                id: 1,
-                name: 'HP Pavilion 15 Laptop - Intel Core i7, 16GB RAM, 512GB SSD',
-                brand: 'HP',
-                price: 159999,
-                oldPrice: 185000,
-                rating: 4.5,
-                reviews: 124,
-                image: 'img/product-1.png',
-                condition: 'new',
-                category: 'laptops',
-                inStock: true,
-                isNew: true,
-                specs: { ram: '16GB', storage: '512GB SSD', processor: 'Intel Core i7 11th Gen' }
-            },
-            {
-                id: 2,
-                name: 'Dell XPS 13 Ultrabook - 11th Gen i5, 8GB RAM, 256GB SSD',
-                brand: 'Dell',
-                price: 129999,
-                oldPrice: 149999,
-                rating: 4.7,
-                reviews: 89,
-                image: 'img/product-2.png',
-                condition: 'new',
-                category: 'laptops',
-                inStock: true,
-                isNew: false
-            },
-            {
-                id: 3,
-                name: 'Apple MacBook Air M2 - 8GB RAM, 512GB SSD',
-                brand: 'Apple',
-                price: 189999,
-                oldPrice: null,
-                rating: 4.9,
-                reviews: 256,
-                image: 'img/product-3.png',
-                condition: 'new',
-                category: 'laptops',
-                inStock: true,
-                isNew: true
-            },
-            {
-                id: 4,
-                name: 'Lenovo ThinkPad E14 - Refurbished - i5, 8GB, 256GB',
-                brand: 'Lenovo',
-                price: 54999,
-                oldPrice: 75000,
-                rating: 4.2,
-                reviews: 43,
-                image: 'img/product-4.png',
-                condition: 'refurbished',
-                category: 'laptops',
-                inStock: true,
-                isNew: false
-            },
-            {
-                id: 5,
-                name: 'Samsung Galaxy S23 Ultra - 256GB, 12GB RAM',
-                brand: 'Samsung',
-                price: 149999,
-                oldPrice: 169999,
-                rating: 4.8,
-                reviews: 189,
-                image: 'img/product-5.png',
-                condition: 'new',
-                category: 'phones',
-                inStock: true,
-                isNew: true
-            },
-            {
-                id: 6,
-                name: 'Apple AirPods Pro (2nd Generation)',
-                brand: 'Apple',
-                price: 42999,
-                oldPrice: null,
-                rating: 4.6,
-                reviews: 321,
-                image: 'img/product-6.png',
-                condition: 'new',
-                category: 'audio',
-                inStock: true,
-                isNew: false
-            }
-        ];
+        // Live products cache (fetched from backend)
+        let productsCache = [];
 
         // Initialize price range slider
         const priceSlider = document.getElementById('priceRange');
@@ -773,45 +687,50 @@
             return { minPrice, maxPrice, brands, categories, condition, inStock };
         }
 
-        // Load products
-        function loadProducts(filters = {}) {
+        // Load products from API (client-side filtering)
+        async function loadProducts(filters = {}) {
             const grid = document.getElementById('productsGrid');
             grid.innerHTML = '<div class="col-12 text-center py-5"><div class="spinner-border text-primary" role="status"></div></div>';
 
-            // Filter products (replace with API call)
-            setTimeout(() => {
-                let filtered = [...sampleProducts];
-
-                // Apply price filter
-                if (filters.minPrice || filters.maxPrice) {
-                    filtered = filtered.filter(p => 
-                        p.price >= (filters.minPrice || 0) && 
-                        p.price <= (filters.maxPrice || Infinity)
-                    );
+            try {
+                if (!productsCache || productsCache.length === 0) {
+                    const resp = await fetch(`${API_BASE_URL}/products?limit=1000`);
+                    if (resp.ok) {
+                        const json = await resp.json();
+                        productsCache = json.products || [];
+                    } else {
+                        productsCache = [];
+                    }
                 }
 
-                // Apply brand filter
+                // apply client-side filters
+                let filtered = [...productsCache];
+
+                if (filters.minPrice || filters.maxPrice) {
+                    filtered = filtered.filter(p => p.price >= (filters.minPrice || 0) && p.price <= (filters.maxPrice || Infinity));
+                }
+
                 if (filters.brands && filters.brands.length > 0) {
                     filtered = filtered.filter(p => filters.brands.includes(p.brand));
                 }
 
-                // Apply category filter
                 if (filters.categories && filters.categories.length > 0) {
                     filtered = filtered.filter(p => filters.categories.includes(p.category));
                 }
 
-                // Apply condition filter
                 if (filters.condition && filters.condition !== 'all') {
                     filtered = filtered.filter(p => p.condition === filters.condition);
                 }
 
-                // Apply stock filter
                 if (filters.inStock) {
-                    filtered = filtered.filter(p => p.inStock);
+                    filtered = filtered.filter(p => p.stock && p.stock > 0);
                 }
 
                 displayProducts(filtered);
-            }, 500);
+            } catch (err) {
+                console.error('Failed loading products', err);
+                grid.innerHTML = '<div class="col-12 text-center py-5 text-danger">Failed to load products</div>';
+            }
         }
 
         // Display products
@@ -832,7 +751,7 @@
 
             grid.innerHTML = products.map(product => `
                 <div class="col-md-6 col-lg-4">
-                    <div class="product-card">
+                    <div class="product-card" data-product-id="${product.id}">
                         <div class="product-image">
                             <img src="${product.image}" alt="${product.name}">
                             <div class="product-badges">
@@ -841,10 +760,10 @@
                                 ${product.condition === 'refurbished' ? '<span class="badge-refurbished">Refurbished</span>' : ''}
                             </div>
                             <div class="product-actions">
-                                <button class="action-btn" onclick="addToWishlist(${product.id})" title="Add to Wishlist">
+                                <button class="action-btn" onclick="addToWishlist('${product.id}')" title="Add to Wishlist">
                                     <i class="fas fa-heart"></i>
                                 </button>
-                                <button class="action-btn" onclick="quickView(${product.id})" title="Quick View">
+                                <button class="action-btn view-product-btn" data-product-id="${product.id}" title="Quick View">
                                     <i class="fas fa-eye"></i>
                                 </button>
                             </div>
@@ -864,7 +783,7 @@
                             </div>
                         </div>
                         <div class="product-footer">
-                            <button class="btn btn-primary btn-add-cart" onclick="addToCart(${product.id})">
+                            <button class="btn btn-primary btn-add-cart" onclick="addToCart('${product.id}')">
                                 <i class="fas fa-shopping-cart me-2"></i>Add to Cart
                             </button>
                             <a href="product-detail.html?id=${product.id}" class="btn btn-quick-view">
@@ -917,17 +836,17 @@
             applyFilters();
         }
 
-        // Add to cart
+        // Add to cart (uses live products cache)
         function addToCart(productId) {
-            const product = sampleProducts.find(p => p.id === productId);
+            const product = (productsCache || []).find(p => String(p.id) === String(productId));
             if (product) {
                 window.cartManager.addItem(product, 1);
             }
         }
 
-        // Add to wishlist
+        // Add to wishlist (uses live products cache)
         function addToWishlist(productId) {
-            const product = sampleProducts.find(p => p.id === productId);
+            const product = (productsCache || []).find(p => String(p.id) === String(productId));
             if (product) {
                 window.cartManager.showNotification('Added to wishlist', `${product.name} saved for later`, 'success');
             }

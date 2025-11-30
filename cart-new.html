@@ -782,30 +782,9 @@
         window.ShoppingCart = ShoppingCart;
         window.cart = cart;
 
-        // Add sample products for testing (Remove in production)
+        // Sample product helper removed — cart now uses real products from the API.
         window.addSampleProducts = function() {
-            const sampleProducts = [
-                {
-                    id: 1,
-                    name: 'HP Pavilion 15 Laptop - Intel Core i7, 16GB RAM, 512GB SSD',
-                    brand: 'HP',
-                    price: 159999,
-                    oldPrice: 185000,
-                    image: 'img/product-1.png',
-                    specs: { ram: '16GB', storage: '512GB SSD', processor: 'Intel Core i7 11th Gen' }
-                },
-                {
-                    id: 2,
-                    name: 'Dell XPS 13 Ultrabook',
-                    brand: 'Dell',
-                    price: 129999,
-                    oldPrice: 149999,
-                    image: 'img/product-2.png',
-                    specs: { ram: '8GB', storage: '256GB SSD', processor: 'Intel Core i5 11th Gen' }
-                }
-            ];
-
-            sampleProducts.forEach(product => cart.addItem(product));
+            console.warn('addSampleProducts() removed — use admin to upload products or add items from the shop.');
         };
     </script>
 </body>

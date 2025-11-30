@@ -1,4 +1,4 @@
-const { supabase } = require('../config/supabase');
+const { supabase, supabaseAdmin } = require('../config/supabase');
 
 // @desc    Get user profile
 // @route   GET /api/users/profile
@@ -137,7 +137,8 @@ exports.deleteAddress = async (req, res, next) => {
 // @access  Private/Admin
 exports.getAllUsers = async (req, res, next) => {
     try {
-        const { data: users, error } = await supabase
+        const client = supabaseAdmin || supabase;
+        const { data: users, error } = await client
             .from('users')
             .select('id, name, email, phone, role, created_at')
             .order('created_at', { ascending: false });

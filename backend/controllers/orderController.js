@@ -1,4 +1,4 @@
-const { supabase } = require('../config/supabase');
+const { supabase, supabaseAdmin } = require('../config/supabase');
 
 // @desc    Get user orders
 // @route   GET /api/orders
@@ -148,7 +148,8 @@ exports.cancelOrder = async (req, res, next) => {
 // @access  Private/Admin
 exports.getAllOrders = async (req, res, next) => {
     try {
-        const { data: orders, error } = await supabase
+        const client = supabaseAdmin || supabase;
+        const { data: orders, error } = await client
             .from('orders')
             .select('*, users(name, email), order_items(*, products(*))')
             .order('created_at', { ascending: false });

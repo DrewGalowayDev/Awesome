@@ -1,6 +1,6 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const { supabase } = require('../config/supabase');
+const { supabase, supabaseAdmin } = require('../config/supabase');
 
 // Generate JWT token
 const generateToken = (id) => {
@@ -97,14 +97,48 @@ exports.login = async (req, res, next) => {
             });
         }
 
-        // Get user
-        const { data: user, error } = await supabase
-            .from('users')
-            .select('*')
-            .eq('email', email)
-            .single();
 
-        if (error || !user) {
+        // Use the service-role client when available to bypass RLS for server-side auth checks.
+        const client = supabaseAdmin || supabase;
+
+        // Get user by email first (handles emails with special characters safely)
+        let user = null;
+        let supabaseErr = null;
+
+        try {
+            const { data, error } = await client
+                .from('users')
+                .select('*')
+                .eq('email', email)
+                .maybeSingle();
+
+            if (error) supabaseErr = error;
+            if (data) user = data;
+        } catch (e) {
+            supabaseErr = e;
+        }
+
+        // If not found by email, try by username/name
+        if (!user) {
+            try {
+                const { data, error } = await client
+                    .from('users')
+                    .select('*')
+                    .eq('name', email)
+                    .maybeSingle();
+
+                if (error) supabaseErr = error;
+                if (data) user = data;
+            } catch (e) {
+                supabaseErr = e;
+            }
+        }
+
+        if (supabaseErr) {
+            console.error('Supabase query error during login:', supabaseErr);
+        }
+
+        if (!user) {
             return res.status(401).json({
                 success: false,
                 message: 'Invalid credentials'

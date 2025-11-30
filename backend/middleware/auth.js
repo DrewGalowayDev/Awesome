@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const { supabase } = require('../config/supabase');
+const { supabase, supabaseAdmin } = require('../config/supabase');
 
 // Protect routes - verify JWT token
 exports.protect = async (req, res, next) => {
@@ -27,8 +27,11 @@ exports.protect = async (req, res, next) => {
             // Verify token
             const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
+            // Use service-role client when available to bypass RLS for server-side auth checks
+            const client = supabaseAdmin || supabase;
+
             // Get user from database
-            const { data: user, error } = await supabase
+            const { data: user, error } = await client
                 .from('users')
                 .select('*')
                 .eq('id', decoded.id)

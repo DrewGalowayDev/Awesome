@@ -28,7 +28,25 @@ app.use(helmet());
 
 // CORS configuration
 app.use(cors({
-    origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+    origin: function (origin, callback) {
+        // Allow requests with no origin (like mobile apps or curl requests)
+        if (!origin) return callback(null, true);
+
+        // Allow localhost and local file system (including Live Server ports)
+        const allowedOrigins = [
+            'http://localhost:3000',
+            'http://localhost:5000',
+            'http://127.0.0.1:5500',  // Live Server
+            'http://localhost:5500',   // Live Server alternative
+            'null'
+        ];
+
+        if (allowedOrigins.indexOf(origin) !== -1 || origin.startsWith('http://localhost') || origin.startsWith('http://127.0.0.1') || origin === 'null') {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
     credentials: true
 }));
 
