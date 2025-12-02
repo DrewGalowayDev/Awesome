@@ -94,12 +94,35 @@ async function loadDashboardStats() {
     try {
         showSpinner(true);
 
-        // Fetch data from multiple endpoints in parallel
-        const [productsData, ordersData, usersData] = await Promise.all([
-            apiRequest('/products').catch(() => ({ success: false, products: [] })),
-            apiRequest('/orders/admin/all').catch(() => ({ success: false, orders: [] })),
-            apiRequest('/users/admin/all').catch(() => ({ success: false, users: [] }))
-        ]);
+        // Fetch data sequentially with delay to avoid rate limiting
+        // Instead of Promise.all, use sequential requests
+        let productsData = { success: false, products: [] };
+        let ordersData = { success: false, orders: [] };
+        let usersData = { success: false, users: [] };
+
+        try {
+            productsData = await apiRequest('/products');
+        } catch (err) {
+            console.warn('Failed to load products:', err.message);
+        }
+
+        // Small delay to avoid rate limiting
+        await new Promise(resolve => setTimeout(resolve, 300));
+
+        try {
+            ordersData = await apiRequest('/orders/admin/all');
+        } catch (err) {
+            console.warn('Failed to load orders:', err.message);
+        }
+
+        // Small delay to avoid rate limiting
+        await new Promise(resolve => setTimeout(resolve, 300));
+
+        try {
+            usersData = await apiRequest('/users/admin/all');
+        } catch (err) {
+            console.warn('Failed to load users:', err.message);
+        }
 
         // Calculate stats
         const stats = {

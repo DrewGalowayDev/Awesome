@@ -8,6 +8,24 @@ let productsTable = null;
 let categoriesData = [];
 
 // ============================================
+// HELPER FUNCTIONS
+// ============================================
+
+/**
+ * Convert File to Base64 string
+ * @param {File} file - The file to convert
+ * @returns {Promise<string>} Base64 string of the file
+ */
+function fileToBase64(file) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = (error) => reject(error);
+    });
+}
+
+// ============================================
 // LOAD PRODUCTS FROM DATABASE
 // ============================================
 
@@ -28,7 +46,7 @@ async function loadProducts() {
                 stock: parseInt(product.stock),
                 category: product.category_id,
                 condition: product.condition,
-                image: product.images && product.images.length > 0 ? product.images[0] : 'img/product-default.png',
+                image: product.images && product.images.length > 0 ? product.images[0] : 'img/product-1.png',
                 featured: product.is_featured,
                 slug: product.slug,
                 description: product.description,
@@ -97,7 +115,7 @@ function renderProductsTable() {
             </td>
             <td>
                 <img src="${product.image}" alt="${product.name}" class="product-img" 
-                     onerror="this.src='img/product-default.png'">
+                     onerror="this.src='img/product-1.png'">
             </td>
             <td>
                 <strong>${product.name}</strong>
@@ -172,6 +190,22 @@ async function saveProduct() {
     }
 
     const formData = new FormData(form);
+    
+    // Handle image upload
+    const imageFile = formData.get('image');
+    let imageUrl = 'img/product-1.png';
+    
+    if (imageFile && imageFile.size > 0) {
+        try {
+            // Convert image to base64 for storage
+            imageUrl = await fileToBase64(imageFile);
+        } catch (error) {
+            console.error('Error converting image:', error);
+            showToast('error', 'Failed to process image');
+            return;
+        }
+    }
+    
     const productData = {
         name: formData.get('name'),
         slug: formData.get('name').toLowerCase().replace(/\s+/g, '-'),
@@ -183,7 +217,9 @@ async function saveProduct() {
         condition: formData.get('condition'),
         description: formData.get('description') || '',
         is_featured: formData.get('featured') === 'on',
-        images: ['img/product-default.png'], // TODO: Implement image upload
+        is_new_arrival: formData.get('newArrival') === 'on',
+        is_deal: formData.get('deal') === 'on',
+        images: [imageUrl],
         specifications: {}
     };
 
@@ -287,7 +323,7 @@ function viewProduct(productId) {
         html: `
             <div class="text-start">
                 <img src="${product.image}" alt="${product.name}" class="img-fluid mb-3 rounded" 
-                     onerror="this.src='img/product-default.png'">
+                     onerror="this.src='img/product-1.png'">
                 <p><strong>Brand:</strong> ${product.brand}</p>
                 <p><strong>Price:</strong> ${formatCurrency(product.price)}</p>
                 ${product.oldPrice ? `<p><strong>Old Price:</strong> ${formatCurrency(product.oldPrice)}</p>` : ''}
@@ -466,7 +502,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         stock: parseInt(product.stock),
                         category: product.category_id,
                         condition: product.condition,
-                        image: product.images && product.images.length > 0 ? product.images[0] : 'img/product-default.png',
+                        image: product.images && product.images.length > 0 ? product.images[0] : 'img/product-1.png',
                         featured: product.is_featured
                     }));
                     renderProductsTable();

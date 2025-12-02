@@ -5,10 +5,14 @@ const { supabase } = require('../config/supabase');
 // @access  Public
 exports.getAllProducts = async (req, res, next) => {
     try {
-        const { page = 1, limit = 12, sort = 'created_at', order = 'desc' } = req.query;
+        // Parse limit with higher default to show all products
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 1000; // Increased default limit
+        const sort = req.query.sort || 'created_at';
+        const order = req.query.order || 'desc';
         
         const from = (page - 1) * limit;
-        const to = from + parseInt(limit) - 1;
+        const to = from + limit - 1;
 
         let query = supabase
             .from('products')

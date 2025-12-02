@@ -31,12 +31,11 @@ document.addEventListener('DOMContentLoaded', () => {
 function loadProductSelector() {
     const select = document.getElementById('whatsappProduct');
     if (!select) return;
-    // Fetch products from API to populate selector
-    const API_BASE = '/api';
+    
+    // Use apiRequest helper for authenticated API calls
     select.innerHTML = '<option value="">Loading products...</option>';
 
-    fetch(`${API_BASE}/products?limit=1000`)
-        .then(res => res.ok ? res.json() : Promise.reject(res))
+    apiRequest('/products?limit=1000')
         .then(json => {
             const products = json.products || [];
             window.adminProductsCache = products; // small global cache for admin tools
@@ -47,6 +46,31 @@ function loadProductSelector() {
             console.error('Failed to load products for admin selector', err);
             select.innerHTML = '<option value="">Failed to load products</option>';
         });
+}
+
+// Build WhatsApp message from product
+function buildMessage(product) {
+    if (!product) return null;
+    const name = product.name || product.title || 'Product';
+    const price = Number(product.price || product.price_display || 0);
+    const oldPrice = Number(product.oldPrice || product.old_price || 0) || null;
+
+    let msg = `Hello! 👋\n\n` +
+        `🛍️ Check out this product:\n\n` +
+        `*${name}*\n\n` +
+        `💰 Price: KSh ${price.toLocaleString()}\n`;
+
+    if (oldPrice) {
+        msg += `🏷️ Was: KSh ${oldPrice.toLocaleString()}\n`;
+        msg += `💸 Save: KSh ${(oldPrice - price).toLocaleString()}!\n`;
+    }
+
+    msg += `\n✅ In Stock\n` +
+        `🚚 Free Delivery\n\n` +
+        `Order now and don't miss out!\n\n` +
+        `Awesome Technologies 🎯`;
+
+    return msg;
 }
 
 // Send Product via WhatsApp
@@ -60,40 +84,12 @@ function sendProductViaWhatsApp() {
     }
 
     // Find product in cache, otherwise fetch single product
-    const API_BASE = '/api';
-    function buildMessage(product) {
-        if (!product) return null;
-        const name = product.name || product.title || 'Product';
-        const price = Number(product.price || product.price_display || 0);
-        const oldPrice = Number(product.oldPrice || product.old_price || 0) || null;
-
-        let msg = `Hello! 👋\n\n` +
-            `🛍️ Check out this product:\n\n` +
-            `*${name}*\n\n` +
-            `💰 Price: KSh ${price.toLocaleString()}\n`;
-
-        if (oldPrice) {
-            msg += `🏷️ Was: KSh ${oldPrice.toLocaleString()}\n`;
-            msg += `💸 Save: KSh ${(oldPrice - price).toLocaleString()}!\n`;
-        }
-
-        msg += `\n✅ In Stock\n` +
-            `🚚 Free Delivery\n\n` +
-            `Order now and don't miss out!\n\n` +
-            `Awesome Technologies 🎯`;
-
-        return msg;
-    }
-
     (async () => {
         try {
             let product = (window.adminProductsCache || []).find(p => String(p.id) === String(productId));
             if (!product) {
-                const resp = await fetch(`${API_BASE}/products/${productId}`);
-                if (resp.ok) {
-                    const json = await resp.json();
-                    product = json.product || null;
-                }
+                const json = await apiRequest(`/products/${productId}`);
+                product = json.product || null;
             }
 
             const message = buildMessage(product);

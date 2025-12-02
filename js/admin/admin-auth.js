@@ -109,57 +109,88 @@ async function apiRequest(endpoint, options = {}) {
 
     setGlobalLoading(true);
 
-    try {
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), API_CONFIG.TIMEOUT);
+    let lastError = null;
+    let retryCount = 0;
+    const maxRetries = 2;
 
-        const response = await fetch(`${API_CONFIG.BASE_URL}${endpoint}`, {
-            ...config,
-            signal: controller.signal
-        });
+    while (retryCount <= maxRetries) {
+        try {
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), API_CONFIG.TIMEOUT);
 
-        clearTimeout(timeoutId);
+            const response = await fetch(`${API_CONFIG.BASE_URL}${endpoint}`, {
+                ...config,
+                signal: controller.signal
+            });
 
-        const data = await response.json();
+            clearTimeout(timeoutId);
 
-        if (!response.ok) {
-            // Handle different error types
-            if (response.status === 401) {
-                // Unauthorized - token expired or invalid
-                localStorage.removeItem('auth_token');
-                localStorage.removeItem('user');
-                window.location.href = 'index.html';
-                throw new Error('Session expired. Please login again.');
-            } else if (response.status === 403) {
-                throw new Error('Access denied. Insufficient permissions.');
-            } else if (response.status === 404) {
-                throw new Error('Resource not found.');
-            } else if (response.status === 500) {
-                throw new Error('Server error. Please try again later.');
+            const data = await response.json();
+
+            if (!response.ok) {
+                // Handle rate limiting with retry
+                if (response.status === 429) {
+                    if (retryCount < maxRetries) {
+                        const delay = Math.pow(2, retryCount) * 1000; // Exponential backoff: 1s, 2s, 4s
+                        console.warn(`Rate limited. Retrying in ${delay}ms... (Attempt ${retryCount + 1}/${maxRetries})`);
+                        await new Promise(resolve => setTimeout(resolve, delay));
+                        retryCount++;
+                        continue; // Retry the request
+                    } else {
+                        throw new Error('Server is busy. Please try again in a moment.');
+                    }
+                }
+
+                // Handle other error types
+                if (response.status === 401) {
+                    // Unauthorized - token expired or invalid
+                    localStorage.removeItem('auth_token');
+                    localStorage.removeItem('user');
+                    window.location.href = 'index.html';
+                    throw new Error('Session expired. Please login again.');
+                } else if (response.status === 403) {
+                    throw new Error('Access denied. Insufficient permissions.');
+                } else if (response.status === 404) {
+                    throw new Error('Resource not found.');
+                } else if (response.status === 500) {
+                    throw new Error('Server error. Please try again later.');
+                }
+
+                throw new Error(data.message || `Request failed with status ${response.status}`);
             }
 
-            throw new Error(data.message || `Request failed with status ${response.status}`);
+            setGlobalLoading(false);
+            return data;
+
+        } catch (error) {
+            lastError = error;
+
+            if (error.name === 'AbortError') {
+                console.error('Request timeout:', endpoint);
+                lastError = new Error('Request timeout. Please check your connection.');
+            }
+
+            // Don't retry on non-recoverable errors
+            if (lastError.message && lastError.message.includes('Session expired')) {
+                break;
+            }
+
+            retryCount++;
+            if (retryCount > maxRetries) {
+                break;
+            }
         }
-
-        setGlobalLoading(false);
-        return data;
-
-    } catch (error) {
-        setGlobalLoading(false);
-
-        if (error.name === 'AbortError') {
-            console.error('Request timeout:', endpoint);
-            throw new Error('Request timeout. Please check your connection.');
-        }
-
-        console.error('API Error:', {
-            endpoint,
-            error: error.message,
-            timestamp: new Date().toISOString()
-        });
-
-        throw error;
     }
+
+    setGlobalLoading(false);
+
+    console.error('API Error:', {
+        endpoint,
+        error: lastError.message,
+        timestamp: new Date().toISOString()
+    });
+
+    throw lastError;
 }
 
 // ============================================

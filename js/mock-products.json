@@ -1,0 +1,57 @@
+[
+  {
+    "id": "prod-1",
+    "name": "Hp Elite Book Laptop",
+    "price": 45000,
+    "old_price": 54000,
+    "images": ["img/product-1.png"],
+    "categories": { "name": "Laptops" },
+    "description": "Powerful HP EliteBook with great battery life and performance.",
+    "features": ["Intel i7", "16GB RAM", "512GB SSD"],
+    "rating": 5,
+    "is_new_arrival": true
+  },
+  {
+    "id": "prod-2",
+    "name": "Wireless Headphones",
+    "price": 7500,
+    "old_price": 9000,
+    "images": ["img/product-2.png"],
+    "categories": { "name": "Audio" },
+    "description": "Comfortable wireless headphones with noise cancellation.",
+    "features": ["Bluetooth 5.2", "ANC", "20h Battery"],
+    "rating": 4,
+    "is_deal": true
+  },
+  {
+    "id": "prod-3",
+    "name": "USB-C Fast Charger",
+    "price": 1200,
+    "images": ["img/product-3.png"],
+    "categories": { "name": "Accessories" },
+    "description": "Compact 65W USB-C charger for laptops and phones.",
+    "features": ["65W", "USB-C", "Compact"],
+    "rating": 4
+  },
+  {
+    "id": "prod-4",
+    "name": "Portable SSD 1TB",
+    "price": 12000,
+    "images": ["img/product-4.png"],
+    "categories": { "name": "Storage" },
+    "description": "High-speed external SSD for backups.",
+    "features": ["1TB", "USB-C 3.2"],
+    "rating": 5,
+    "is_featured": true
+  },
+  {
+    "id": "prod-5",
+    "name": "Smartphone Case",
+    "price": 499,
+    "images": ["img/product-5.png"],
+    "categories": { "name": "Phones" },
+    "description": "Durable protective case.",
+    "features": ["Shockproof", "Slim"],
+    "rating": 3
+  }
+]
