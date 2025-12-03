@@ -1,8 +1,12 @@
 const { createClient } = require('@supabase/supabase-js');
 
-// Validate environment variables
-if (!process.env.SUPABASE_URL || !process.env.SUPABASE_ANON_KEY) {
-    throw new Error('Missing Supabase credentials. Please check your .env file.');
+// Validate environment variables and provide clearer guidance
+const missing = [];
+if (!process.env.SUPABASE_URL) missing.push('SUPABASE_URL');
+if (!process.env.SUPABASE_ANON_KEY) missing.push('SUPABASE_ANON_KEY');
+
+if (missing.length > 0) {
+    throw new Error(`Missing Supabase env var(s): ${missing.join(', ')}.\nPlease copy backend/.env.example to backend/.env and fill in the values (do NOT commit secrets).`);
 }
 
 // Create Supabase client

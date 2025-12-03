@@ -404,7 +404,7 @@ function renderProduct(product, index) {
     const productId = product.id || product._id || product.product_id || index;
 
     return `
-    <div class="col-md-6 col-lg-4 col-xl-3">
+    <div class="product-card-wrap">
         <div class="product-card wow fadeInUp" data-wow-delay="${delay}s">
             <div class="product-image-wrapper">
                 <img src="${image}" class="product-image" alt="${title}" onerror="this.src='img/product-1.png'">
