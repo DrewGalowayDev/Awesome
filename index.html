@@ -1348,16 +1348,27 @@
                         return;
                     }
 
-                    let html = products.map(product => `
+                    let html = products.map(product => {
+                        let productImage = 'img/product-1.png';
+                        if (product.images && Array.isArray(product.images) && product.images.length > 0) {
+                            productImage = product.images[0];
+                        } else if (product.image_url) {
+                            productImage = product.image_url;
+                        } else if (product.image) {
+                            productImage = product.image;
+                        }
+
+                        return `
                         <div class="search-result-item" onclick="goToProduct(${product.id})">
-                            <img src="${product.image || 'img/product-default.jpg'}" alt="${product.name}" class="search-result-image">
+                            <img src="${productImage}" alt="${product.name}" class="search-result-image">
                             <div class="search-result-info">
                                 <div class="search-result-name">${highlightMatch(product.name, query)}</div>
                                 <div class="search-result-price">KSh ${Number(product.price).toLocaleString()}</div>
                             </div>
                             ${product.stock > 0 ? '<span class="badge bg-success search-result-badge">In Stock</span>' : '<span class="badge bg-danger search-result-badge">Out of Stock</span>'}
                         </div>
-                    `).join('');
+                    `;
+                    }).join('');
 
                     html += `<a href="shop.html?search=${encodeURIComponent(query)}" class="search-view-all">
                         View All Results <i class="fas fa-arrow-right ms-2"></i>
