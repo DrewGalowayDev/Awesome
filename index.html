@@ -29,6 +29,105 @@
 
     <!-- Template Stylesheet -->
     <link href="css/style.css" rel="stylesheet">
+    
+    <style>
+        /* Search Results Dropdown */
+        .search-results-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+            max-height: 400px;
+            overflow-y: auto;
+            z-index: 1000;
+            margin-top: 5px;
+        }
+
+        .search-result-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            border-bottom: 1px solid #f0f0f0;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .search-result-item:hover {
+            background: #f8f9fa;
+        }
+
+        .search-result-item:last-child {
+            border-bottom: none;
+        }
+
+        .search-result-image {
+            width: 50px;
+            height: 50px;
+            object-fit: contain;
+            border-radius: 8px;
+            background: #f8f9fa;
+            margin-right: 12px;
+        }
+
+        .search-result-info {
+            flex: 1;
+        }
+
+        .search-result-name {
+            font-weight: 600;
+            color: #333;
+            font-size: 0.95rem;
+            margin-bottom: 3px;
+        }
+
+        .search-result-price {
+            color: var(--bs-primary);
+            font-weight: 700;
+        }
+
+        .search-result-badge {
+            font-size: 0.7rem;
+            padding: 3px 8px;
+            border-radius: 20px;
+        }
+
+        .search-no-results {
+            padding: 30px;
+            text-align: center;
+            color: #999;
+        }
+
+        .search-no-results i {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .search-view-all {
+            display: block;
+            padding: 15px;
+            text-align: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-weight: 600;
+            text-decoration: none;
+            border-radius: 0 0 12px 12px;
+            transition: all 0.3s;
+        }
+
+        .search-view-all:hover {
+            background: linear-gradient(135deg, #5a6fd6 0%, #6a4190 100%);
+            color: white;
+        }
+        
+        .highlight {
+            background-color: #fff59d;
+            font-weight: 600;
+        }
+    </style>
 </head>
 
 <body>
@@ -115,20 +214,21 @@
             <div class="col-lg-6 text-center ps-3">
                 <div class="position-relative" style="margin: 0 auto; max-width: 500px;">
                     <div class="d-flex border rounded-pill">
-                        <input class="form-control border-0 rounded-pill w-100 py-2 ps-4" type="text"
+                        <input class="form-control border-0 rounded-pill w-100 py-2 ps-4" type="text" id="indexSearchInput" onkeyup="handleIndexSearch(event)"
                             placeholder="Search for products...">
-                        <select class="form-select text-dark border-0 border-start rounded-0 p-2"
+                        <select class="form-select text-dark border-0 border-start rounded-0 p-2" id="categoryFilter"
                             style="width: 150px; font-size: 14px;">
-                            <option value="All Category">All</option>
+                            <option value="">All</option>
                             <option value="laptops">Laptops</option>
                             <option value="audio">Audio</option>
                             <option value="cables">Cables</option>
                             <option value="storage">Storage</option>
                             <option value="phones">Phones</option>
                         </select>
-                        <button type="button" class="btn btn-primary rounded-pill py-2 px-4" style="border: 0;"><i
+                        <button type="button" class="btn btn-primary rounded-pill py-2 px-4" style="border: 0;" onclick="performIndexSearch()"><i
                                 class="fas fa-search"></i></button>
                     </div>
+                    <div class="search-results-dropdown" id="indexSearchDropdown"></div>
                 </div>
             </div>
             <div class="col-lg-4 text-center text-lg-end">
@@ -1189,6 +1289,113 @@
                 const submitBtn = document.querySelector('#signupForm button[type="submit"]');
                 submitBtn.innerHTML = '<i class="fas fa-user-check me-2"></i>Create Account';
                 submitBtn.disabled = false;
+            });
+        </script>
+        <script>
+            // Search functionality for index.html
+            const API_BASE = 'http://localhost:5000/api';
+            let searchTimeout;
+
+            // Handle search input with debouncing
+            function handleIndexSearch(event) {
+                clearTimeout(searchTimeout);
+                const query = event.target.value.trim();
+
+                if (query.length === 0) {
+                    document.getElementById('indexSearchDropdown').style.display = 'none';
+                    return;
+                }
+
+                if (event.key === 'Enter') {
+                    performIndexSearch();
+                    return;
+                }
+
+                searchTimeout = setTimeout(() => {
+                    performIndexSearch();
+                }, 300);
+            }
+
+            // Perform search
+            async function performIndexSearch() {
+                const query = document.getElementById('indexSearchInput').value.trim();
+                const category = document.getElementById('categoryFilter').value;
+                const dropdown = document.getElementById('indexSearchDropdown');
+
+                if (!query) {
+                    dropdown.style.display = 'none';
+                    return;
+                }
+
+                try {
+                    let url = `${API_BASE}/products?search=${encodeURIComponent(query)}&limit=10`;
+                    if (category) {
+                        url += `&category=${encodeURIComponent(category)}`;
+                    }
+
+                    const response = await fetch(url);
+                    const data = await response.json();
+                    const products = data.products || data || [];
+
+                    if (!products || products.length === 0) {
+                        dropdown.innerHTML = `
+                            <div class="search-no-results">
+                                <i class="fas fa-search"></i>
+                                <p>No products found for "${highlightMatch(query, query)}"</p>
+                            </div>
+                        `;
+                        dropdown.style.display = 'block';
+                        return;
+                    }
+
+                    let html = products.map(product => `
+                        <div class="search-result-item" onclick="goToProduct(${product.id})">
+                            <img src="${product.image || 'img/product-default.jpg'}" alt="${product.name}" class="search-result-image">
+                            <div class="search-result-info">
+                                <div class="search-result-name">${highlightMatch(product.name, query)}</div>
+                                <div class="search-result-price">KSh ${Number(product.price).toLocaleString()}</div>
+                            </div>
+                            ${product.stock > 0 ? '<span class="badge bg-success search-result-badge">In Stock</span>' : '<span class="badge bg-danger search-result-badge">Out of Stock</span>'}
+                        </div>
+                    `).join('');
+
+                    html += `<a href="shop.html?search=${encodeURIComponent(query)}" class="search-view-all">
+                        View All Results <i class="fas fa-arrow-right ms-2"></i>
+                    </a>`;
+
+                    dropdown.innerHTML = html;
+                    dropdown.style.display = 'block';
+                } catch (error) {
+                    console.error('Search error:', error);
+                    dropdown.innerHTML = `
+                        <div class="search-no-results">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <p>Error performing search. Please try again.</p>
+                        </div>
+                    `;
+                    dropdown.style.display = 'block';
+                }
+            }
+
+            // Highlight matching text
+            function highlightMatch(text, query) {
+                if (!query) return text;
+                const regex = new RegExp(`(${query})`, 'gi');
+                return text.replace(regex, '<span class="highlight">$1</span>');
+            }
+
+            // Go to product detail page
+            function goToProduct(productId) {
+                window.location.href = `product-detail.html?id=${productId}`;
+            }
+
+            // Close dropdown when clicking outside
+            document.addEventListener('click', function(e) {
+                const dropdown = document.getElementById('indexSearchDropdown');
+                const searchInput = document.getElementById('indexSearchInput');
+                if (dropdown && searchInput && !dropdown.contains(e.target) && e.target !== searchInput) {
+                    dropdown.style.display = 'none';
+                }
             });
         </script>
         <script src="js/load-products.js"></script>

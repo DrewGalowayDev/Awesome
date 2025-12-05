@@ -76,13 +76,28 @@ class CartManager {
             existingItem.quantity += quantity;
             this.showNotification('Updated cart', `${product.name} quantity increased`);
         } else {
+            // Handle images array or single image
+            let productImage = 'img/product-1.png';
+            if (product.images && Array.isArray(product.images) && product.images.length > 0) {
+                productImage = product.images[0];
+            } else if (product.image_url) {
+                productImage = product.image_url;
+            } else if (product.image) {
+                productImage = product.image;
+            }
+            
             this.items.push({
                 id: product.id,
                 name: product.name,
-                brand: product.brand,
+                brand: product.brand || 'Unknown',
                 price: product.price,
-                oldPrice: product.oldPrice || null,
-                image: product.image,
+                oldPrice: product.old_price || product.oldPrice || null,
+                image: productImage,
+                images: product.images || [productImage],
+                description: product.description || product.short_description || '',
+                category_name: product.category_name || product.category || '',
+                condition: product.condition || 'new',
+                stock_quantity: product.stock_quantity || null,
                 specs: product.specs || {},
                 quantity: quantity
             });

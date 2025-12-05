@@ -303,6 +303,106 @@
                 opacity: 1;
             }
         }
+
+        /* Search Results Dropdown */
+        .search-results-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+            max-height: 400px;
+            overflow-y: auto;
+            z-index: 1000;
+            margin-top: 5px;
+        }
+
+        .search-result-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            border-bottom: 1px solid #f0f0f0;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .search-result-item:hover {
+            background: #f8f9fa;
+        }
+
+        .search-result-item:last-child {
+            border-bottom: none;
+        }
+
+        .search-result-image {
+            width: 50px;
+            height: 50px;
+            object-fit: contain;
+            border-radius: 8px;
+            background: #f8f9fa;
+            margin-right: 12px;
+        }
+
+        .search-result-info {
+            flex: 1;
+        }
+
+        .search-result-name {
+            font-weight: 600;
+            color: #333;
+            font-size: 0.95rem;
+            margin-bottom: 3px;
+        }
+
+        .search-result-price {
+            color: var(--bs-primary);
+            font-weight: 700;
+        }
+
+        .search-result-badge {
+            font-size: 0.7rem;
+            padding: 3px 8px;
+            border-radius: 20px;
+        }
+
+        .search-no-results {
+            padding: 30px;
+            text-align: center;
+            color: #999;
+        }
+
+        .search-no-results i {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .search-view-all {
+            display: block;
+            padding: 15px;
+            text-align: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-weight: 600;
+            text-decoration: none;
+            border-radius: 0 0 12px 12px;
+            transition: all 0.3s;
+        }
+
+        .search-view-all:hover {
+            background: linear-gradient(135deg, #5a6fd6 0%, #6a4190 100%);
+            color: white;
+        }
+
+        .cart-item-description {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
     </style>
 </head>
 
@@ -354,10 +454,14 @@
             <div class="col-lg-6 ps-3">
                 <div class="position-relative" style="max-width: 650px; margin: 0 auto;">
                     <div class="d-flex border rounded-pill">
-                        <input class="form-control border-0 rounded-pill w-100 py-3" type="text" placeholder="Search for laptops, phones, accessories...">
-                        <button type="button" class="btn btn-primary rounded-pill py-3 px-5">
+                        <input class="form-control border-0 rounded-pill w-100 py-3" type="text" id="cartSearchInput" placeholder="Search cart items or products..." onkeyup="handleCartSearch(event)">
+                        <button type="button" class="btn btn-primary rounded-pill py-3 px-5" onclick="performCartSearch()">
                             <i class="fas fa-search"></i>
                         </button>
+                    </div>
+                    <!-- Search Results Dropdown -->
+                    <div id="searchResultsDropdown" class="search-results-dropdown" style="display: none;">
+                        <div id="searchResultsList"></div>
                     </div>
                 </div>
             </div>
@@ -370,6 +474,66 @@
         </div>
     </div>
     <!-- Header End -->
+      <!-- Navbar & Hero Start -->
+        <div class="container-fluid nav-bar p-0">
+            <div class="row gx-0 bg-primary px-5 align-items-center">
+                <div class="col-lg-3 d-none d-lg-block">
+                    <nav class="navbar navbar-light position-relative" style="width: 250px;">
+                        <button class="navbar-toggler border-0 fs-4 w-100 px-0 text-start" type="button" data-bs-toggle="collapse" data-bs-target="#allCat">
+                            <h4 class="m-0"><i class="fa fa-bars me-2"></i>All Categories</h4>
+                        </button>
+                        <div class="collapse navbar-collapse rounded-bottom" id="allCat">
+                            <div class="navbar-nav ms-auto py-0">
+                                <ul class="list-unstyled categories-bars" id="desktopCategoryList">
+                                    <!-- Categories loaded dynamically -->
+                                </ul>
+                            </div>
+                        </div>
+                    </nav>
+                </div>
+                <div class="col-12 col-lg-9">
+                    <nav class="navbar navbar-expand-lg navbar-light bg-primary ">
+                        <a href="" class="navbar-brand d-block d-lg-none">
+                            <h1 class="display-5 text-secondary m-0"><i class="fas fa-shopping-bag text-white me-2"></i>Electro</h1>
+                            <!-- <img src="img/logo.png" alt="Logo"> -->
+                        </a>
+                        <button class="navbar-toggler ms-auto" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+                            <span class="fa fa-bars fa-1x"></span>
+                        </button>
+                        <div class="collapse navbar-collapse" id="navbarCollapse">
+                            <div class="navbar-nav ms-auto py-0">
+                                <a href="index.html" class="nav-item nav-link">Home</a>
+                                <a href="shop.html" class="nav-item nav-link">Shop</a>
+                                <a href="cart.html" class="nav-item nav-link active">Shop Cart</a>
+                                <a href="cheackout.html" class="nav-item nav-link">Cheackout</a>
+                                <a href="contact.html" class="nav-item nav-link me-2">Contact</a>
+                                <div class="nav-item dropdown d-block d-lg-none mb-3">
+                                    <a href="#" class="nav-link" data-bs-toggle="dropdown"><span class="dropdown-toggle">All Category</span></a>
+                                    <div class="dropdown-menu m-0">
+                                        <ul class="list-unstyled categories-bars" id="mobileCategoryList">
+                                            <!-- Categories loaded dynamically -->
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <a href="" class="btn btn-secondary rounded-pill py-2 px-4 px-lg-3 mb-3 mb-md-3 mb-lg-0"><i class="fa fa-mobile-alt me-2"></i> +0123 456 7890</a>
+                        </div>
+                    </nav>
+                </div>
+            </div>
+        </div>
+        <!-- Navbar & Hero End -->
+
+        <!-- Single Page Header start -->
+        <div class="container-fluid page-header py-5">
+            <h1 class="text-center text-white display-6 wow fadeInUp" data-wow-delay="0.1s">Cart Page</h1>
+            <ol class="breadcrumb justify-content-center mb-0 wow fadeInUp" data-wow-delay="0.3s">
+                <li class="breadcrumb-item"><a href="#">Home</a></li>
+                <li class="breadcrumb-item"><a href="#">Pages</a></li>
+                <li class="breadcrumb-item active text-white">Cart Page</li>
+            </ol>
+        </div>
+        <!-- Single Page Header End --> 
 
     <!-- Cart Header -->
     <div class="cart-header">
@@ -498,9 +662,71 @@
 
     <script>
         // Configuration
+        const API_BASE_URL = 'http://localhost:5000/api';
         const WHATSAPP_BUSINESS_NUMBER = '+254704546916';
         const STORAGE_KEY = 'awesomeTech_cart';
         const DELIVERY_FEE = 0; // Free delivery
+        
+        // Load categories and product counts from API
+        async function loadCategories() {
+            try {
+                // Fetch both categories and products to get accurate counts
+                const [catResponse, prodResponse] = await Promise.all([
+                    fetch(`${API_BASE_URL}/categories`),
+                    fetch(`${API_BASE_URL}/products?limit=1000`)
+                ]);
+                
+                if (catResponse.ok && prodResponse.ok) {
+                    const catData = await catResponse.json();
+                    const prodData = await prodResponse.json();
+                    
+                    const categories = catData.categories || catData || [];
+                    const products = prodData.products || prodData || [];
+                    
+                    // Count products per category
+                    const categoryCounts = {};
+                    products.forEach(product => {
+                        const catId = product.category_id;
+                        if (catId) {
+                            categoryCounts[catId] = (categoryCounts[catId] || 0) + 1;
+                        }
+                    });
+                    
+                    // Add counts to categories
+                    const categoriesWithCounts = categories.map(cat => ({
+                        ...cat,
+                        product_count: categoryCounts[cat.id] || 0
+                    }));
+                    
+                    renderCategories(categoriesWithCounts);
+                }
+            } catch (error) {
+                console.error('Error loading categories:', error);
+            }
+        }
+        
+        // Render categories in both desktop and mobile menus
+        function renderCategories(categories) {
+            const desktopList = document.getElementById('desktopCategoryList');
+            const mobileList = document.getElementById('mobileCategoryList');
+            
+            const html = categories.map(cat => `
+                <li>
+                    <div class="categories-bars-item">
+                        <a href="shop-new.html?category=${cat.slug || cat.id}">${cat.name}</a>
+                        <span>(${cat.product_count || 0})</span>
+                    </div>
+                </li>
+            `).join('');
+            
+            if (desktopList) desktopList.innerHTML = html;
+            if (mobileList) mobileList.innerHTML = html;
+        }
+        
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            loadCategories();
+        });
         
         // Cart Management Class
         class ShoppingCart {
@@ -624,53 +850,90 @@
 
                 emptyCart.style.display = 'none';
                 
-                container.innerHTML = this.items.map(item => `
+                container.innerHTML = this.items.map(item => {
+                    // Handle images array or single image
+                    let itemImage = 'img/product-1.png';
+                    if (item.images && Array.isArray(item.images) && item.images.length > 0) {
+                        itemImage = item.images[0];
+                    } else if (item.image_url) {
+                        itemImage = item.image_url;
+                    } else if (item.image) {
+                        itemImage = item.image;
+                    }
+                    
+                    // Get description (handle various field names)
+                    const description = item.description || item.short_description || '';
+                    const truncatedDesc = description.length > 120 ? description.substring(0, 120) + '...' : description;
+                    
+                    // Get condition badge
+                    const conditionBadge = item.condition ? `<span class="badge ${item.condition === 'new' ? 'bg-success' : 'bg-warning text-dark'} me-2">${item.condition}</span>` : '';
+                    
+                    // Get category
+                    const category = item.category_name || item.category || '';
+                    
+                    return `
                     <div class="cart-item" data-product-id="${item.id}">
-                        <div class="row align-items-center g-3">
-                            <div class="col-md-2 col-3">
-                                <img src="${item.image}" alt="${item.name}" class="cart-item-image">
+                        <div class="row align-items-start g-3">
+                            <div class="col-md-2 col-4">
+                                <img src="${itemImage}" alt="${item.name}" class="cart-item-image" onerror="this.onerror=null; this.src='img/product-1.png'">
                             </div>
-                            <div class="col-md-4 col-9">
+                            <div class="col-md-5 col-8">
                                 <div class="cart-item-details">
-                                    <div class="cart-item-brand">${item.brand}</div>
-                                    <h5>${item.name}</h5>
+                                    <div class="d-flex align-items-center mb-1">
+                                        <span class="cart-item-brand">${item.brand || 'Unknown Brand'}</span>
+                                        ${category ? `<span class="badge bg-light text-dark ms-2" style="font-size: 0.7rem;">${category}</span>` : ''}
+                                    </div>
+                                    <h5 class="mb-2">${item.name}</h5>
+                                    <div class="d-flex align-items-center mb-2">
+                                        ${conditionBadge}
+                                        ${item.stock_quantity ? `<small class="text-muted"><i class="fas fa-box me-1"></i>${item.stock_quantity} in stock</small>` : ''}
+                                    </div>
+                                    ${truncatedDesc ? `<p class="cart-item-description text-muted mb-2" style="font-size: 0.85rem; line-height: 1.4;">${truncatedDesc}</p>` : ''}
                                     ${item.specs ? `
                                         <div class="cart-item-specs">
-                                            <small><i class="fas fa-microchip me-1"></i>${item.specs.processor || 'N/A'}</small><br>
-                                            <small><i class="fas fa-memory me-1"></i>${item.specs.ram || 'N/A'} | ${item.specs.storage || 'N/A'}</small>
+                                            <small class="d-block"><i class="fas fa-microchip me-1 text-primary"></i>${item.specs.processor || 'N/A'}</small>
+                                            <small class="d-block"><i class="fas fa-memory me-1 text-primary"></i>${item.specs.ram || 'N/A'} | ${item.specs.storage || 'N/A'}</small>
+                                            ${item.specs.display ? `<small class="d-block"><i class="fas fa-desktop me-1 text-primary"></i>${item.specs.display}</small>` : ''}
                                         </div>
                                     ` : ''}
                                 </div>
                             </div>
                             <div class="col-md-2 col-6">
                                 <div class="quantity-control">
-                                    <button class="quantity-btn" onclick="cart.updateQuantity(${item.id}, ${item.quantity - 1})">
+                                    <button class="quantity-btn" onclick="cart.updateQuantity('${item.id}', ${item.quantity - 1})">
                                         <i class="fas fa-minus"></i>
                                     </button>
-                                    <input type="number" class="quantity-value" value="${item.quantity}" readonly>
-                                    <button class="quantity-btn" onclick="cart.updateQuantity(${item.id}, ${item.quantity + 1})">
+                                    <input type="number" class="quantity-value" value="${item.quantity}" min="1" onchange="cart.updateQuantity('${item.id}', parseInt(this.value) || 1)">
+                                    <button class="quantity-btn" onclick="cart.updateQuantity('${item.id}', ${item.quantity + 1})">
                                         <i class="fas fa-plus"></i>
                                     </button>
                                 </div>
                             </div>
-                            <div class="col-md-3 col-4">
+                            <div class="col-md-2 col-4">
                                 <div class="item-price">
                                     KSh ${(item.price * item.quantity).toLocaleString()}
                                 </div>
-                                ${item.oldPrice ? `
+                                ${item.oldPrice || item.old_price ? `
                                     <div class="item-old-price">
-                                        KSh ${(item.oldPrice * item.quantity).toLocaleString()}
+                                        KSh ${((item.oldPrice || item.old_price) * item.quantity).toLocaleString()}
+                                    </div>
+                                    <div class="text-success" style="font-size: 0.8rem;">
+                                        <i class="fas fa-tag me-1"></i>Save KSh ${(((item.oldPrice || item.old_price) - item.price) * item.quantity).toLocaleString()}
                                     </div>
                                 ` : ''}
+                                <div class="text-muted mt-1" style="font-size: 0.75rem;">
+                                    KSh ${item.price.toLocaleString()} each
+                                </div>
                             </div>
                             <div class="col-md-1 col-2 text-end">
-                                <button class="btn-remove" onclick="cart.removeItem(${item.id})" title="Remove item">
+                                <button class="btn-remove" onclick="cart.removeItem('${item.id}')" title="Remove item">
                                     <i class="fas fa-trash"></i>
                                 </button>
                             </div>
                         </div>
                     </div>
-                `).join('');
+                `;
+                }).join('');
 
                 this.updateCartCount();
                 this.updateSummary();
@@ -786,6 +1049,183 @@
         window.addSampleProducts = function() {
             console.warn('addSampleProducts() removed — use admin to upload products or add items from the shop.');
         };
+
+        // ========== SEARCH FUNCTIONALITY ==========
+        let searchTimeout = null;
+        let allProducts = [];
+
+        // Fetch all products for search
+        async function fetchProductsForSearch() {
+            try {
+                const response = await fetch('http://localhost:5000/api/products?limit=1000');
+                if (response.ok) {
+                    const data = await response.json();
+                    allProducts = data.products || data || [];
+                }
+            } catch (error) {
+                console.warn('Could not fetch products for search:', error);
+            }
+        }
+
+        // Initialize product search on page load
+        fetchProductsForSearch();
+
+        // Handle search input with debounce
+        function handleCartSearch(event) {
+            clearTimeout(searchTimeout);
+            const query = event.target.value.trim();
+
+            if (event.key === 'Enter') {
+                performCartSearch();
+                return;
+            }
+
+            if (query.length < 2) {
+                hideSearchResults();
+                return;
+            }
+
+            searchTimeout = setTimeout(() => {
+                showSearchResults(query);
+            }, 300);
+        }
+
+        // Show search results dropdown
+        function showSearchResults(query) {
+            const dropdown = document.getElementById('searchResultsDropdown');
+            const resultsList = document.getElementById('searchResultsList');
+            const lowerQuery = query.toLowerCase();
+
+            // Search in cart items first
+            const cartMatches = cart.items.filter(item => 
+                item.name.toLowerCase().includes(lowerQuery) ||
+                (item.brand && item.brand.toLowerCase().includes(lowerQuery)) ||
+                (item.description && item.description.toLowerCase().includes(lowerQuery))
+            );
+
+            // Search in all products
+            const productMatches = allProducts.filter(product => 
+                product.name.toLowerCase().includes(lowerQuery) ||
+                (product.brand && product.brand.toLowerCase().includes(lowerQuery)) ||
+                (product.description && product.description.toLowerCase().includes(lowerQuery))
+            ).slice(0, 8); // Limit to 8 results
+
+            let html = '';
+
+            // Show cart matches first
+            if (cartMatches.length > 0) {
+                html += '<div class="p-2 bg-light"><small class="text-muted fw-bold">IN YOUR CART</small></div>';
+                cartMatches.forEach(item => {
+                    const itemImage = item.images?.[0] || item.image || 'img/product-1.png';
+                    html += `
+                        <div class="search-result-item" onclick="scrollToCartItem('${item.id}')">
+                            <img src="${itemImage}" alt="${item.name}" class="search-result-image" onerror="this.src='img/product-1.png'">
+                            <div class="search-result-info">
+                                <div class="search-result-name">${highlightMatch(item.name, query)}</div>
+                                <div class="search-result-price">KSh ${item.price.toLocaleString()}</div>
+                            </div>
+                            <span class="badge bg-success search-result-badge">In Cart</span>
+                        </div>
+                    `;
+                });
+            }
+
+            // Show product matches
+            if (productMatches.length > 0) {
+                html += '<div class="p-2 bg-light"><small class="text-muted fw-bold">PRODUCTS</small></div>';
+                productMatches.forEach(product => {
+                    const productImage = product.images?.[0] || product.image_url || 'img/product-1.png';
+                    const inCart = cart.items.some(item => item.id === product.id);
+                    html += `
+                        <div class="search-result-item" onclick="goToProduct('${product.id}')">
+                            <img src="${productImage}" alt="${product.name}" class="search-result-image" onerror="this.src='img/product-1.png'">
+                            <div class="search-result-info">
+                                <div class="search-result-name">${highlightMatch(product.name, query)}</div>
+                                <div class="d-flex align-items-center gap-2">
+                                    <span class="search-result-price">KSh ${product.price.toLocaleString()}</span>
+                                    ${product.brand ? `<small class="text-muted">${product.brand}</small>` : ''}
+                                </div>
+                            </div>
+                            ${inCart ? '<span class="badge bg-success search-result-badge">In Cart</span>' : '<span class="badge bg-primary search-result-badge">View</span>'}
+                        </div>
+                    `;
+                });
+            }
+
+            // No results
+            if (cartMatches.length === 0 && productMatches.length === 0) {
+                html = `
+                    <div class="search-no-results">
+                        <i class="fas fa-search"></i>
+                        <p>No results found for "${query}"</p>
+                        <small>Try different keywords or browse our shop</small>
+                    </div>
+                `;
+            }
+
+            // Add view all link
+            html += `<a href="shop-new.html?search=${encodeURIComponent(query)}" class="search-view-all">
+                <i class="fas fa-external-link-alt me-2"></i>Search "${query}" in Shop
+            </a>`;
+
+            resultsList.innerHTML = html;
+            dropdown.style.display = 'block';
+        }
+
+        // Highlight matching text
+        function highlightMatch(text, query) {
+            const regex = new RegExp(`(${query})`, 'gi');
+            return text.replace(regex, '<mark style="background: #fff3cd; padding: 0 2px;">$1</mark>');
+        }
+
+        // Hide search results
+        function hideSearchResults() {
+            document.getElementById('searchResultsDropdown').style.display = 'none';
+        }
+
+        // Scroll to cart item
+        function scrollToCartItem(productId) {
+            hideSearchResults();
+            const cartItem = document.querySelector(`.cart-item[data-product-id="${productId}"]`);
+            if (cartItem) {
+                cartItem.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                cartItem.style.animation = 'pulse 0.5s ease 2';
+                setTimeout(() => {
+                    cartItem.style.animation = '';
+                }, 1000);
+            }
+        }
+
+        // Go to product in shop
+        function goToProduct(productId) {
+            window.location.href = `shop-new.html?product=${productId}`;
+        }
+
+        // Perform full search (redirect to shop)
+        function performCartSearch() {
+            const query = document.getElementById('cartSearchInput').value.trim();
+            if (query) {
+                window.location.href = `shop-new.html?search=${encodeURIComponent(query)}`;
+            }
+        }
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(event) {
+            const searchContainer = document.querySelector('.position-relative');
+            if (searchContainer && !searchContainer.contains(event.target)) {
+                hideSearchResults();
+            }
+        });
+
+        // Add pulse animation for highlighting cart items
+        const pulseStyle = document.createElement('style');
+        pulseStyle.textContent = `
+            @keyframes pulse {
+                0%, 100% { box-shadow: 0 2px 15px rgba(0,0,0,0.08); }
+                50% { box-shadow: 0 5px 30px rgba(102, 126, 234, 0.4); border-color: #667eea; }
+            }
+        `;
+        document.head.appendChild(pulseStyle);
     </script>
 </body>
 

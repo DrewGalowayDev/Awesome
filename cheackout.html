@@ -1,117 +1,349 @@
 <!DOCTYPE html>
 <html lang="en">
 
-    <head>
-        <meta charset="utf-8">
-        <title>Electro - Electronics Website Template</title>
-        <meta content="width=device-width, initial-scale=1.0" name="viewport">
-        <meta content="" name="keywords">
-        <meta content="" name="description">
+<head>
+    <meta charset="utf-8">
+    <title>Checkout - Awesome Technologies</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="" name="keywords">
+    <meta content="" name="description">
 
-        <!-- Google Web Fonts -->
-        <link rel="preconnect" href="https://fonts.googleapis.com">
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet"> 
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Raleway:wght@600;800&display=swap" rel="stylesheet"> 
 
-        <!-- Icon Font Stylesheet -->
-        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css"/>
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- Icon Font Stylesheet -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css"/>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
 
-        <!-- Libraries Stylesheet -->
-        <link href="lib/animate/animate.min.css" rel="stylesheet">
-        <link href="lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
+    <!-- Libraries Stylesheet -->
+    <link href="lib/animate/animate.min.css" rel="stylesheet">
+    <link href="lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
 
+    <!-- Customized Bootstrap Stylesheet -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
 
-        <!-- Customized Bootstrap Stylesheet -->
-        <link href="css/bootstrap.min.css" rel="stylesheet">
+    <!-- Template Stylesheet -->
+    <link href="css/style.css" rel="stylesheet">
 
-        <!-- Template Stylesheet -->
-        <link href="css/style.css" rel="stylesheet">
-    </head>
+    <style>
+        .order-summary-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+            padding: 25px;
+            position: sticky;
+            top: 100px;
+        }
 
-    <body>
+        .cart-item-checkout {
+            display: flex;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid #eee;
+        }
 
-        <!-- Spinner Start -->
-        <div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
-            <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
-                <span class="sr-only">Loading...</span>
+        .cart-item-checkout:last-child {
+            border-bottom: none;
+        }
+
+        .cart-item-checkout img {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-right: 15px;
+        }
+
+        .cart-item-info {
+            flex: 1;
+        }
+
+        .cart-item-info h6 {
+            margin: 0 0 5px 0;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .cart-item-info small {
+            color: #666;
+        }
+
+        .payment-method-card {
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .payment-method-card:hover {
+            border-color: var(--bs-primary);
+            background: #f8f9fa;
+        }
+
+        .payment-method-card.active {
+            border-color: var(--bs-primary);
+            background: rgba(var(--bs-primary-rgb), 0.05);
+        }
+
+        .payment-method-card input[type="radio"] {
+            margin-right: 12px;
+            width: 20px;
+            height: 20px;
+        }
+
+        .payment-logo {
+            height: 30px;
+            margin-left: auto;
+        }
+
+        .form-control:focus {
+            border-color: var(--bs-primary);
+            box-shadow: 0 0 0 0.2rem rgba(var(--bs-primary-rgb), 0.25);
+        }
+
+        .checkout-steps {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 40px;
+            position: relative;
+        }
+
+        .checkout-step {
+            flex: 1;
+            text-align: center;
+            position: relative;
+        }
+
+        .checkout-step::before {
+            content: '';
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            width: 100%;
+            height: 2px;
+            background: #ddd;
+            z-index: 0;
+        }
+
+        .checkout-step:last-child::before {
+            display: none;
+        }
+
+        .step-circle {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #ddd;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 10px;
+            position: relative;
+            z-index: 1;
+            font-weight: 600;
+        }
+
+        .checkout-step.active .step-circle {
+            background: var(--bs-primary);
+        }
+
+        .checkout-step.completed .step-circle {
+            background: #28a745;
+        }
+
+        .empty-cart-message {
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .empty-cart-message i {
+            font-size: 80px;
+            color: #ddd;
+            margin-bottom: 20px;
+        }
+
+        .loading-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.7);
+            z-index: 9999;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .loading-overlay.show {
+            display: flex;
+        }
+
+        .loading-content {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .spinner-border {
+            width: 3rem;
+            height: 3rem;
+        }
+
+        /* Search Results Dropdown */
+        .search-results-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+            max-height: 400px;
+            overflow-y: auto;
+            z-index: 1000;
+            margin-top: 5px;
+        }
+
+        .search-result-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            border-bottom: 1px solid #f0f0f0;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .search-result-item:hover {
+            background: #f8f9fa;
+        }
+
+        .search-result-item:last-child {
+            border-bottom: none;
+        }
+
+        .search-result-image {
+            width: 50px;
+            height: 50px;
+            object-fit: contain;
+            border-radius: 8px;
+            background: #f8f9fa;
+            margin-right: 12px;
+        }
+
+        .search-result-info {
+            flex: 1;
+        }
+
+        .search-result-name {
+            font-weight: 600;
+            color: #333;
+            font-size: 0.95rem;
+            margin-bottom: 3px;
+        }
+
+        .search-result-price {
+            color: var(--bs-primary);
+            font-weight: 700;
+        }
+
+        .search-result-badge {
+            font-size: 0.7rem;
+            padding: 3px 8px;
+            border-radius: 20px;
+        }
+
+        .search-no-results {
+            padding: 30px;
+            text-align: center;
+            color: #999;
+        }
+
+        .search-no-results i {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .highlight {
+            background-color: #fff59d;
+            font-weight: 600;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-content">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Processing...</span>
+            </div>
+            <h5 class="mt-3">Processing your order...</h5>
+            <p class="text-muted">Please wait</p>
+        </div>
+    </div>
+
+    <!-- Topbar Start -->
+    <div class="container-fluid px-5 d-none border-bottom d-lg-block">
+        <div class="row gx-0 align-items-center">
+            <div class="col-lg-4 text-center text-lg-start mb-lg-0">
+                <div class="d-flex flex-wrap">
+                    <a href="#" class="text-muted me-4"><i class="fas fa-question-circle me-2"></i>Help</a>
+                    <a href="#" class="text-muted me-4"><i class="fas fa-headset me-2"></i>Support</a>
+                    <a href="contact.html" class="text-muted me-0"><i class="fas fa-phone-alt me-2"></i>Contact</a>
+                </div>
+            </div>
+            <div class="col-lg-4 text-center mb-2 mb-lg-0">
+                <a href="index.html" class="text-decoration-none">
+                    <span class="h4 text-lowercase text-primary bg-dark px-2">Awesome</span>
+                    <span class="h4 text-lowercase text-dark bg-primary px-2 ml-n1">Technologies</span>
+                </a>
+            </div>
+            <div class="col-lg-4 text-center text-lg-end">
+                <div class="d-flex flex-wrap align-items-center justify-content-end">
+                    <a href="tel:+254704546916" class="text-muted me-4"><i class="fas fa-phone-alt me-2"></i>+254 704 546 916</a>
+                    <div class="dropdown">
+                        <a href="#" class="dropdown-toggle text-muted" data-bs-toggle="dropdown"><i class="fas fa-user-cog me-2"></i>Dashboard</a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="#">My Account</a></li>
+                            <li><a class="dropdown-item" href="#">Orders</a></li>
+                            <li><a class="dropdown-item" href="#">Wishlist</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="#">Logout</a></li>
+                        </ul>
+                    </div>
+                </div>
             </div>
         </div>
-        <!-- Spinner End -->
+    </div>
+    <!-- Topbar End -->
 
+   
 
-        <!-- Topbar Start -->
-        <div class="container-fluid px-5 d-none border-bottom d-lg-block">
-            <div class="row gx-0 align-items-center">
-                <div class="col-lg-4 text-center text-lg-start mb-lg-0">
-                    <div class="d-inline-flex align-items-center" style="height: 45px;">
-                        <a href="#" class="text-muted me-2"> Help</a><small> / </small>
-                        <a href="#" class="text-muted mx-2"> Support</a><small> / </small>
-                        <a href="#" class="text-muted ms-2"> Contact</a>
-                    </div>
-                </div>
-                <div class="col-lg-4 text-center d-flex align-items-center justify-content-center">
-                    <small class="text-dark">Call Us:</small>
-                    <a href="#" class="text-muted">(+012) 1234 567890</a>
-                </div>
-
-                <div class="col-lg-4 text-center text-lg-end">
-                    <div class="d-inline-flex align-items-center" style="height: 45px;">
-                        <div class="dropdown">
-                            <a href="#" class="dropdown-toggle text-muted me-2" data-bs-toggle="dropdown"><small> USD</small></a>
-                            <div class="dropdown-menu rounded">
-                                <a href="#" class="dropdown-item"> Euro</a>
-                                <a href="#" class="dropdown-item"> Dolar</a>
-                            </div>
-                        </div>
-                        <div class="dropdown">
-                            <a href="#" class="dropdown-toggle text-muted mx-2" data-bs-toggle="dropdown"><small> English</small></a>
-                            <div class="dropdown-menu rounded">
-                                <a href="#" class="dropdown-item"> English</a>
-                                <a href="#" class="dropdown-item"> Turkish</a>
-                                <a href="#" class="dropdown-item"> Spanol</a>
-                                <a href="#" class="dropdown-item"> Italiano</a>
-                            </div>
-                        </div>
-                        <div class="dropdown">
-                            <a href="#" class="dropdown-toggle text-muted ms-2" data-bs-toggle="dropdown"><small><i class="fa fa-home me-2"></i> My Dashboard</small></a>
-                            <div class="dropdown-menu rounded">
-                                <a href="#" class="dropdown-item"> Login</a>
-                                <a href="#" class="dropdown-item"> Wishlist</a>
-                                <a href="#" class="dropdown-item"> My Card</a>
-                                <a href="#" class="dropdown-item"> Notifications</a>
-                                <a href="#" class="dropdown-item"> Account Settings</a>
-                                <a href="#" class="dropdown-item"> My Account</a>
-                                <a href="#" class="dropdown-item"> Log Out</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="container-fluid px-5 py-4 d-none d-lg-block">
-            <div class="row gx-0 align-items-center text-center">
-                <div class="col-md-4 col-lg-3 text-center text-lg-start">
-                    <div class="d-inline-flex align-items-center">
-                        <a href="" class="navbar-brand p-0">
-                            <h1 class="display-5 text-primary m-0"><i class="fas fa-shopping-bag text-secondary me-2"></i>Electro</h1>
-                            <!-- <img src="img/logo.png" alt="Logo"> -->
-                        </a>
-                    </div>
+    
+    <!-- Page Header End -->
                 </div>
                 <div class="col-md-4 col-lg-6 text-center">
                     <div class="position-relative ps-4">
                         <div class="d-flex border rounded-pill">
-                            <input class="form-control border-0 rounded-pill w-100 py-3" type="text" data-bs-target="#dropdownToggle123" placeholder="Search Looking For?">
-                            <select class="form-select text-dark border-0 border-start rounded-0 p-3" style="width: 200px;">
-                                <option value="All Category">All Category</option>
-                                <option value="Pest Control-2">Category 1</option>
-                                <option value="Pest Control-3">Category 2</option>
-                                <option value="Pest Control-4">Category 3</option>
-                                <option value="Pest Control-5">Category 4</option>
+                            <input class="form-control border-0 rounded-pill w-100 py-3" type="text" id="checkoutSearchInput" onkeyup="handleCheckoutSearch(event)" placeholder="Search Looking For?">
+                            <select class="form-select text-dark border-0 border-start rounded-0 p-3" id="checkoutCategoryFilter" style="width: 200px;">
+                                <option value="">All Category</option>
+                                <option value="laptops">Laptops</option>
+                                <option value="phones">Phones</option>
+                                <option value="audio">Audio</option>
+                                <option value="storage">Storage</option>
                             </select>
-                            <button type="button" class="btn btn-primary rounded-pill py-3 px-5" style="border: 0;"><i class="fas fa-search"></i></button>
+                            <button type="button" class="btn btn-primary rounded-pill py-3 px-5" style="border: 0;" onclick="performCheckoutSearch()"><i class="fas fa-search"></i></button>
                         </div>
+                        <div class="search-results-dropdown" id="checkoutSearchDropdown"></div>
                     </div>
                 </div>
                 <div class="col-md-4 col-lg-3 text-center text-lg-end">
@@ -319,212 +551,177 @@
 
 
         <!-- Checkout Page Start -->
-        <div class="container-fluid bg-light overflow-hidden py-5">
-            <div class="container py-5">
-                <h1 class="mb-4 wow fadeInUp" data-wow-delay="0.1s">Billing details</h1>
-                <form action="#">
+        <div class="container-fluid py-5" id="checkoutContent">
+            <div class="container">
+                <!-- Empty Cart Message -->
+                <div id="emptyCartMessage" style="display: none;">
+                    <div class="empty-cart-message">
+                        <i class="fas fa-shopping-cart"></i>
+                        <h2>Your Cart is Empty</h2>
+                        <p>Add some products to your cart before checking out.</p>
+                        <a href="shop-new.html" class="btn btn-primary btn-lg">
+                            <i class="fas fa-shopping-bag me-2"></i>Continue Shopping
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Checkout Form -->
+                <form id="checkoutForm">
                     <div class="row g-5">
-                        <div class="col-md-12 col-lg-6 col-xl-6 wow fadeInUp" data-wow-delay="0.1s">
-                            <div class="row">
-                                <div class="col-md-12 col-lg-6">
-                                    <div class="form-item w-100">
-                                        <label class="form-label my-3">First Name<sup>*</sup></label>
-                                        <input type="text" class="form-control">
+                        <!-- Billing Details -->
+                        <div class="col-lg-7">
+                            <div class="bg-white p-4 rounded shadow-sm">
+                                <h3 class="mb-4"><i class="fas fa-user-circle me-2"></i>Billing Details</h3>
+                                
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label">First Name <span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control" id="firstName" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Last Name <span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control" id="lastName" required>
+                                    </div>
+                                    <div class="col-12">
+                                        <label class="form-label">Phone Number <span class="text-danger">*</span></label>
+                                        <input type="tel" class="form-control" id="phone" placeholder="07XX XXX XXX" required>
+                                        <small class="text-muted">For M-Pesa payment and order updates</small>
+                                    </div>
+                                    <div class="col-12">
+                                        <label class="form-label">Email Address <span class="text-danger">*</span></label>
+                                        <input type="email" class="form-control" id="email" required>
+                                    </div>
+                                    <div class="col-12">
+                                        <label class="form-label">County/Region <span class="text-danger">*</span></label>
+                                        <select class="form-control" id="county" required>
+                                            <option value="">Select County</option>
+                                            <option value="Nairobi">Nairobi</option>
+                                            <option value="Mombasa">Mombasa</option>
+                                            <option value="Kisumu">Kisumu</option>
+                                            <option value="Nakuru">Nakuru</option>
+                                            <option value="Kiambu">Kiambu</option>
+                                            <option value="Machakos">Machakos</option>
+                                            <option value="Kajiado">Kajiado</option>
+                                            <option value="Other">Other</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-12">
+                                        <label class="form-label">Town/City <span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control" id="city" required>
+                                    </div>
+                                    <div class="col-12">
+                                        <label class="form-label">Street Address <span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control" id="address" placeholder="Building name, Street name" required>
+                                    </div>
+                                    <div class="col-12">
+                                        <label class="form-label">Delivery Notes (Optional)</label>
+                                        <textarea class="form-control" id="notes" rows="3" placeholder="Special instructions for delivery..."></textarea>
                                     </div>
                                 </div>
-                                <div class="col-md-12 col-lg-6">
-                                    <div class="form-item w-100">
-                                        <label class="form-label my-3">Last Name<sup>*</sup></label>
-                                        <input type="text" class="form-control">
+
+                                <!-- Payment Methods -->
+                                <div class="mt-5">
+                                    <h3 class="mb-4"><i class="fas fa-credit-card me-2"></i>Payment Method</h3>
+                                    
+                                    <div class="payment-method-card active" onclick="selectPaymentMethod('mpesa')">
+                                        <div class="d-flex align-items-center">
+                                            <input type="radio" name="paymentMethod" id="mpesa" value="mpesa" checked>
+                                            <label for="mpesa" class="mb-0 flex-fill">
+                                                <strong>M-Pesa</strong>
+                                                <p class="mb-0 text-muted small">Pay securely via M-Pesa STK Push</p>
+                                            </label>
+                                            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/15/M-PESA_LOGO-01.svg/200px-M-PESA_LOGO-01.svg.png" alt="M-Pesa" class="payment-logo">
+                                        </div>
+                                    </div>
+
+                                    <div class="payment-method-card" onclick="selectPaymentMethod('cod')">
+                                        <div class="d-flex align-items-center">
+                                            <input type="radio" name="paymentMethod" id="cod" value="cod">
+                                            <label for="cod" class="mb-0">
+                                                <strong>Cash on Delivery</strong>
+                                                <p class="mb-0 text-muted small">Pay when you receive the order</p>
+                                            </label>
+                                            <i class="fas fa-money-bill-wave fa-2x text-success payment-logo"></i>
+                                        </div>
+                                    </div>
+
+                                    <div class="payment-method-card" onclick="selectPaymentMethod('bank')">
+                                        <div class="d-flex align-items-center">
+                                            <input type="radio" name="paymentMethod" id="bank" value="bank">
+                                            <label for="bank" class="mb-0">
+                                                <strong>Bank Transfer</strong>
+                                                <p class="mb-0 text-muted small">Direct bank transfer</p>
+                                            </label>
+                                            <i class="fas fa-university fa-2x text-primary payment-logo"></i>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="form-item">
-                                <label class="form-label my-3">Company Name<sup>*</sup></label>
-                                <input type="text" class="form-control">
-                            </div>
-                            <div class="form-item">
-                                <label class="form-label my-3">Address <sup>*</sup></label>
-                                <input type="text" class="form-control" placeholder="House Number Street Name">
-                            </div>
-                            <div class="form-item">
-                                <label class="form-label my-3">Town/City<sup>*</sup></label>
-                                <input type="text" class="form-control">
-                            </div>
-                            <div class="form-item">
-                                <label class="form-label my-3">Country<sup>*</sup></label>
-                                <input type="text" class="form-control">
-                            </div>
-                            <div class="form-item">
-                                <label class="form-label my-3">Postcode/Zip<sup>*</sup></label>
-                                <input type="text" class="form-control">
-                            </div>
-                            <div class="form-item">
-                                <label class="form-label my-3">Mobile<sup>*</sup></label>
-                                <input type="tel" class="form-control">
-                            </div>
-                            <div class="form-item">
-                                <label class="form-label my-3">Email Address<sup>*</sup></label>
-                                <input type="email" class="form-control">
-                            </div>
-                            <div class="form-check my-3">
-                                <input type="checkbox" class="form-check-input" id="Account-1" name="Accounts" value="Accounts">
-                                <label class="form-check-label" for="Account-1">Create an account?</label>
-                            </div>
-                            <hr>
-                            <div class="form-check my-3">
-                                <input class="form-check-input" type="checkbox" id="Address-1" name="Address" value="Address">
-                                <label class="form-check-label" for="Address-1">Ship to a different address?</label>
-                            </div>
-                            <div class="form-item">
-                                <textarea name="text" class="form-control" spellcheck="false" cols="30" rows="11" placeholder="Oreder Notes (Optional)"></textarea>
+
+                                <!-- Payment Instructions -->
+                                <div class="alert alert-info mt-3" id="mpesaInstructions">
+                                    <i class="fas fa-info-circle me-2"></i>
+                                    <strong>M-Pesa Payment:</strong> Enter your M-Pesa registered phone number above. You'll receive an STK push prompt to complete the payment.
+                                </div>
+
+                                <div class="alert alert-warning mt-3" id="codInstructions" style="display: none;">
+                                    <i class="fas fa-info-circle me-2"></i>
+                                    <strong>Cash on Delivery:</strong> Pay with cash when the order is delivered to your doorstep.
+                                </div>
+
+                                <div class="alert alert-info mt-3" id="bankInstructions" style="display: none;">
+                                    <i class="fas fa-info-circle me-2"></i>
+                                    <strong>Bank Transfer:</strong> Transfer funds to our bank account. Order ships after payment confirmation.
+                                </div>
                             </div>
                         </div>
-                        <div class="col-md-12 col-lg-6 col-xl-6 wow fadeInUp" data-wow-delay="0.3s">
-                            <div class="table-responsive">
-                                <table class="table">
-                                    <thead>
-                                        <tr class="text-center">
-                                            <th scope="col" class="text-start">Name</th>
-                                            <th scope="col">Model</th>
-                                            <th scope="col">Price</th>
-                                            <th scope="col">Quantity</th>
-                                            <th scope="col">Total</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr class="text-center">
-                                            <th scope="row" class="text-start py-4">
-                                                Apple iPad Mini
-                                            </th>
-                                            <td class="py-4">G2356</td>
-                                            <td class="py-4">$269.00</td>
-                                            <td class="py-4 text-center">2</td>
-                                            <td class="py-4">$538.00</td>
-                                        </tr>
-                                        <tr class="text-center">
-                                            <th scope="row" class="text-start py-4">
-                                                Apple iPad Mini
-                                            </th>
-                                            <td class="py-4">G2356</td>
-                                            <td class="py-4">$269.00</td>
-                                            <td class="py-4">2</td>
-                                            <td class="py-4">$538.00</td>
-                                        </tr>
-                                        <tr class="text-center">
-                                            <th scope="row" class="text-start py-4">
-                                                Apple iPad Mini
-                                            </th>
-                                            <td class="py-4">G2356</td>
-                                            <td class="py-4">$269.00</td>
-                                            <td class="py-4">2</td>
-                                            <td class="py-4">$538.00</td>
-                                        </tr>
-                                        <tr class="text-center">
-                                            <th scope="row" class="text-start py-4">
-                                                Apple iPad Mini
-                                            </th>
-                                            <td class="py-4">G2356</td>
-                                            <td class="py-4">$269.00</td>
-                                            <td class="py-4">2</td>
-                                            <td class="py-4">$538.00</td>
-                                        </tr>
-                                        <tr class="text-center">
-                                            <th scope="row" class="text-start py-4">
-                                                Apple iPad Mini
-                                            </th>
-                                            <td class="py-4">G2356</td>
-                                            <td class="py-4">$269.00</td>
-                                            <td class="py-4">2</td>
-                                            <td class="py-4">$538.00</td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row">
-                                            </th>
-                                            <td class="py-4"></td>
-                                            <td class="py-4"></td>
-                                            <td class="py-4">
-                                                <p class="mb-0 text-dark py-2">Subtotal</p>
-                                            </td>
-                                            <td class="py-4">
-                                                <div class="py-2 text-center border-bottom border-top">
-                                                    <p class="mb-0 text-dark">$1134.00</p>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row">
-                                            </th>
-                                            <td class="py-4">
-                                                <p class="mb-0 text-dark py-4">Shipping</p>
-                                            </td>
-                                            <td colspan="3" class="py-4">
-                                                <div class="form-check text-start">
-                                                    <input type="checkbox" class="form-check-input bg-primary border-0" id="Shipping-1" name="Shipping-1" value="Shipping">
-                                                    <label class="form-check-label" for="Shipping-1">Free Shipping</label>
-                                                </div>
-                                                <div class="form-check text-start">
-                                                    <input type="checkbox" class="form-check-input bg-primary border-0" id="Shipping-2" name="Shipping-1" value="Shipping">
-                                                    <label class="form-check-label" for="Shipping-2">Flat rate: $15.00</label>
-                                                </div>
-                                                <div class="form-check text-start">
-                                                    <input type="checkbox" class="form-check-input bg-primary border-0" id="Shipping-3" name="Shipping-1" value="Shipping">
-                                                    <label class="form-check-label" for="Shipping-3">Local Pickup: $8.00</label>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row">
-                                            </th>
-                                            <td class="py-4">
-                                                <p class="mb-0 text-dark text-uppercase py-2">TOTAL</p>
-                                            </td>
-                                            <td class="py-4"></td>
-                                            <td class="py-4"></td>
-                                            <td class="py-4">
-                                                <div class="py-2 text-center border-bottom border-top">
-                                                    <p class="mb-0 text-dark">$135.00</p>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                            <div class="row g-0 text-center align-items-center justify-content-center border-bottom py-2">
-                                <div class="col-12">
-                                    <div class="form-check text-start my-2">
-                                        <input type="checkbox" class="form-check-input bg-primary border-0" id="Transfer-1" name="Transfer" value="Transfer">
-                                        <label class="form-check-label" for="Transfer-1">Direct Bank Transfer</label>
-                                    </div>
-                                    <p class="text-start text-dark">Make your payment directly into our bank account. Please use your Order ID as the payment reference. Your order will not be shipped until the funds have cleared in our account.</p>
+
+                        <!-- Order Summary -->
+                        <div class="col-lg-5">
+                            <div class="order-summary-card">
+                                <h3 class="mb-4"><i class="fas fa-shopping-bag me-2"></i>Order Summary</h3>
+                                
+                                <div id="cartItemsList">
+                                    <!-- Cart items loaded dynamically -->
                                 </div>
-                            </div>
-                            <div class="row g-4 text-center align-items-center justify-content-center border-bottom py-2">
-                                <div class="col-12">
-                                    <div class="form-check text-start my-2">
-                                        <input type="checkbox" class="form-check-input bg-primary border-0" id="Payments-1" name="Payments" value="Payments">
-                                        <label class="form-check-label" for="Payments-1">Check Payments</label>
-                                    </div>
+
+                                <hr class="my-4">
+
+                                <!-- Order Totals -->
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span>Subtotal:</span>
+                                    <strong id="subtotalAmount">KSh 0</strong>
                                 </div>
-                            </div>
-                            <div class="row g-4 text-center align-items-center justify-content-center border-bottom py-2">
-                                <div class="col-12">
-                                    <div class="form-check text-start my-2">
-                                        <input type="checkbox" class="form-check-input bg-primary border-0" id="Delivery-1" name="Delivery" value="Delivery">
-                                        <label class="form-check-label" for="Delivery-1">Cash On Delivery</label>
-                                    </div>
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span>Shipping:</span>
+                                    <strong id="shippingAmount">KSh 0</strong>
                                 </div>
-                            </div>
-                            <div class="row g-4 text-center align-items-center justify-content-center border-bottom py-2">
-                                <div class="col-12">
-                                    <div class="form-check text-start my-2">
-                                        <input type="checkbox" class="form-check-input bg-primary border-0" id="Paypal-1" name="Paypal" value="Paypal">
-                                        <label class="form-check-label" for="Paypal-1">Paypal</label>
-                                    </div>
+                                <div class="d-flex justify-content-between mb-2" id="discountRow" style="display: none;">
+                                    <span class="text-success">Discount:</span>
+                                    <strong class="text-success" id="discountAmount">-KSh 0</strong>
                                 </div>
-                            </div>
-                            <div class="row g-4 text-center align-items-center justify-content-center pt-4">
-                                <button type="button" class="btn btn-primary border-secondary py-3 px-4 text-uppercase w-100 text-primary">Place Order</button>
+                                
+                                <hr class="my-3">
+                                
+                                <div class="d-flex justify-content-between mb-4">
+                                    <h4>Total:</h4>
+                                    <h4 class="text-primary" id="totalAmount">KSh 0</h4>
+                                </div>
+
+                                <!-- Place Order Button -->
+                                <button type="submit" class="btn btn-primary btn-lg w-100 mb-3">
+                                    <i class="fas fa-lock me-2"></i>Place Order Securely
+                                </button>
+
+                                <button type="button" class="btn btn-success btn-lg w-100" onclick="checkoutViaWhatsApp()">
+                                    <i class="fab fa-whatsapp me-2"></i>Order via WhatsApp
+                                </button>
+
+                                <div class="mt-4 text-center">
+                                    <small class="text-muted">
+                                        <i class="fas fa-shield-alt me-1"></i>
+                                        Secure SSL encrypted payment
+                                    </small>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -532,6 +729,8 @@
             </div>
         </div>
         <!-- Checkout Page End -->
+                    
+                
 
         <!-- Footer Start -->
         <div class="container-fluid footer py-5 wow fadeIn" data-wow-delay="0.2s">
@@ -659,16 +858,479 @@
         <!-- Back to Top -->
         <a href="#" class="btn btn-primary btn-lg-square back-to-top"><i class="fa fa-arrow-up"></i></a>   
 
-        
     <!-- JavaScript Libraries -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="lib/wow/wow.min.js"></script>
     <script src="lib/owlcarousel/owl.carousel.min.js"></script>
-    
+    <script src="js/cart-manager.js"></script>
 
     <!-- Template Javascript -->
     <script src="js/main.js"></script>
+
+    <script>
+        // API Configuration
+        const API_BASE = 'http://localhost:5000/api';
+        const WHATSAPP_NUMBER = '+254704546916';
+        
+        // Cart and Checkout Data
+        let cartItems = [];
+        let subtotal = 0;
+        let shipping = 500; // Default shipping cost
+        let total = 0;
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            loadCartData();
+            updateCartCount();
+            loadCategories();
+            initializePaymentMethods();
+        });
+
+        // Load cart data from localStorage
+        function loadCartData() {
+            const cart = JSON.parse(localStorage.getItem('awesomeTech_cart') || '[]');
+            cartItems = cart;
+
+            if (cartItems.length === 0) {
+                document.getElementById('emptyCartMessage').style.display = 'block';
+                document.getElementById('checkoutForm').style.display = 'none';
+                return;
+            }
+
+            displayCartItems();
+            calculateTotals();
+        }
+
+        // Display cart items
+        function displayCartItems() {
+            const container = document.getElementById('cartItemsList');
+            
+            container.innerHTML = cartItems.map(item => {
+                const itemTotal = (item.price || 0) * (item.quantity || 1);
+                const img = Array.isArray(item.images) && item.images[0] 
+                    ? item.images[0] 
+                    : (item.image || 'img/product-1.png');
+
+                return `
+                    <div class="cart-item-checkout">
+                        <img src="${img}" alt="${item.name}" onerror="this.onerror=null; this.src='img/product-1.png';">
+                        <div class="cart-item-info">
+                            <h6>${item.name}</h6>
+                            <small class="text-muted">Qty: ${item.quantity || 1} × KSh ${(item.price || 0).toLocaleString()}</small>
+                        </div>
+                        <strong>KSh ${itemTotal.toLocaleString()}</strong>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Calculate totals
+        function calculateTotals() {
+            subtotal = cartItems.reduce((sum, item) => {
+                return sum + ((item.price || 0) * (item.quantity || 1));
+            }, 0);
+
+            // Free shipping for orders above KSh 50,000
+            shipping = subtotal > 50000 ? 0 : 500;
+
+            total = subtotal + shipping;
+
+            // Update UI
+            document.getElementById('subtotalAmount').textContent = `KSh ${subtotal.toLocaleString()}`;
+            document.getElementById('shippingAmount').textContent = shipping === 0 ? 'FREE' : `KSh ${shipping.toLocaleString()}`;
+            document.getElementById('totalAmount').textContent = `KSh ${total.toLocaleString()}`;
+        }
+
+        // Update cart count
+        function updateCartCount() {
+            const cart = JSON.parse(localStorage.getItem('awesomeTech_cart') || '[]');
+            const count = cart.reduce((sum, item) => sum + (item.quantity || 1), 0);
+            const countElement = document.getElementById('headerCartCount');
+            if (countElement) {
+                countElement.textContent = count;
+            }
+        }
+
+        // Load categories
+        async function loadCategories() {
+            try {
+                const response = await fetch(`${API_BASE}/categories`);
+                const categories = await response.json();
+                
+                const dropdown = document.getElementById('categoriesDropdown');
+                if (dropdown) {
+                    categories.forEach(cat => {
+                        const item = document.createElement('a');
+                        item.className = 'dropdown-item';
+                        item.href = `shop-new.html?category=${cat.id}`;
+                        item.textContent = cat.name;
+                        dropdown.appendChild(item);
+                    });
+                }
+            } catch (error) {
+                console.error('Error loading categories:', error);
+            }
+        }
+
+        // Payment method selection
+        function selectPaymentMethod(method) {
+            // Update active class
+            document.querySelectorAll('.payment-method-card').forEach(card => {
+                card.classList.remove('active');
+            });
+            event.currentTarget.classList.add('active');
+
+            // Update radio button
+            document.getElementById(method).checked = true;
+
+            // Show/hide instructions
+            document.getElementById('mpesaInstructions').style.display = method === 'mpesa' ? 'block' : 'none';
+            document.getElementById('codInstructions').style.display = method === 'cod' ? 'block' : 'none';
+            document.getElementById('bankInstructions').style.display = method === 'bank' ? 'block' : 'none';
+        }
+
+        // Initialize payment methods
+        function initializePaymentMethods() {
+            document.querySelectorAll('.payment-method-card').forEach(card => {
+                card.addEventListener('click', function() {
+                    const radio = this.querySelector('input[type="radio"]');
+                    if (radio) {
+                        selectPaymentMethod(radio.value);
+                    }
+                });
+            });
+        }
+
+        // Form submission
+        document.getElementById('checkoutForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            // Validate form
+            if (!this.checkValidity()) {
+                this.reportValidity();
+                return;
+            }
+
+            // Show loading
+            showLoading();
+
+            // Collect form data
+            const orderData = {
+                customer: {
+                    firstName: document.getElementById('firstName').value,
+                    lastName: document.getElementById('lastName').value,
+                    phone: document.getElementById('phone').value,
+                    email: document.getElementById('email').value,
+                    county: document.getElementById('county').value,
+                    city: document.getElementById('city').value,
+                    address: document.getElementById('address').value,
+                    notes: document.getElementById('notes').value
+                },
+                items: cartItems,
+                payment: {
+                    method: document.querySelector('input[name="paymentMethod"]:checked').value,
+                    subtotal: subtotal,
+                    shipping: shipping,
+                    total: total
+                },
+                orderDate: new Date().toISOString()
+            };
+
+            try {
+                // Submit order to API
+                const response = await fetch(`${API_BASE}/orders`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(orderData)
+                });
+
+                if (!response.ok) {
+                    throw new Error('Order submission failed');
+                }
+
+                const result = await response.json();
+
+                // Clear cart
+                localStorage.removeItem('awesomeTech_cart');
+
+                // Show success
+                hideLoading();
+                showSuccessMessage(result.orderId || 'N/A');
+
+            } catch (error) {
+                console.error('Order error:', error);
+                hideLoading();
+                alert('Failed to place order. Please try again or contact support.');
+            }
+        });
+
+        // WhatsApp Checkout
+        function checkoutViaWhatsApp() {
+            const firstName = document.getElementById('firstName').value;
+            const lastName = document.getElementById('lastName').value;
+            const phone = document.getElementById('phone').value;
+            const county = document.getElementById('county').value;
+            const city = document.getElementById('city').value;
+            const address = document.getElementById('address').value;
+
+            if (!firstName || !lastName || !phone || !county || !city || !address) {
+                alert('Please fill in all required billing details first.');
+                return;
+            }
+
+            let message = `🛒 *NEW ORDER REQUEST*\n\n`;
+            message += `📋 *Customer Details:*\n`;
+            message += `Name: ${firstName} ${lastName}\n`;
+            message += `Phone: ${phone}\n`;
+            message += `Location: ${city}, ${county}\n`;
+            message += `Address: ${address}\n\n`;
+
+            message += `📦 *Order Items:*\n`;
+            cartItems.forEach((item, index) => {
+                message += `${index + 1}. ${item.name}\n`;
+                message += `   Qty: ${item.quantity} × KSh ${item.price.toLocaleString()}\n`;
+                message += `   Subtotal: KSh ${((item.price || 0) * (item.quantity || 1)).toLocaleString()}\n\n`;
+            });
+
+            message += `💰 *Order Summary:*\n`;
+            message += `Subtotal: KSh ${subtotal.toLocaleString()}\n`;
+            message += `Shipping: ${shipping === 0 ? 'FREE' : 'KSh ' + shipping.toLocaleString()}\n`;
+            message += `*Total: KSh ${total.toLocaleString()}*\n\n`;
+
+            message += `Please confirm this order and provide payment instructions.\n`;
+            message += `Thank you! 🙏`;
+
+            const encodedMessage = encodeURIComponent(message);
+            const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER.replace(/[^0-9]/g, '')}?text=${encodedMessage}`;
+            window.open(whatsappUrl, '_blank');
+        }
+
+        // Show loading overlay
+        function showLoading() {
+            const overlay = document.getElementById('loadingOverlay');
+            if (overlay) {
+                overlay.classList.add('show');
+            }
+        }
+
+        // Hide loading overlay
+        function hideLoading() {
+            const overlay = document.getElementById('loadingOverlay');
+            if (overlay) {
+                overlay.classList.remove('show');
+            }
+        }
+
+        // Show success message
+        function showSuccessMessage(orderId) {
+            alert(`✅ Order Placed Successfully!\n\nOrder ID: ${orderId}\n\nYou will receive a confirmation email shortly.\nThank you for shopping with us!`);
+            
+            // Redirect to home page
+            setTimeout(() => {
+                window.location.href = 'index.html';
+            }, 2000);
+        }
+
+        // Notification function
+        function showNotification(message, type = 'info') {
+            const colors = {
+                success: '#28a745',
+                info: '#17a2b8',
+                warning: '#ffc107',
+                error: '#dc3545'
+            };
+
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: ${colors[type]};
+                color: white;
+                padding: 15px 25px;
+                border-radius: 8px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                z-index: 9999;
+                animation: slideIn 0.3s ease;
+            `;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+
+        // Search functionality for checkout page
+        let searchTimeout;
+
+        function handleCheckoutSearch(event) {
+            clearTimeout(searchTimeout);
+            const query = event.target.value.trim();
+
+            if (query.length === 0) {
+                document.getElementById('checkoutSearchDropdown').style.display = 'none';
+                return;
+            }
+
+            if (event.key === 'Enter') {
+                performCheckoutSearch();
+                return;
+            }
+
+            searchTimeout = setTimeout(() => {
+                performCheckoutSearch();
+            }, 300);
+        }
+
+        async function performCheckoutSearch() {
+            const query = document.getElementById('checkoutSearchInput').value.trim();
+            const category = document.getElementById('checkoutCategoryFilter').value;
+            const dropdown = document.getElementById('checkoutSearchDropdown');
+
+            if (!query) {
+                dropdown.style.display = 'none';
+                return;
+            }
+
+            try {
+                // Search both cart items and products
+                let resultsHtml = '';
+                
+                // Search in current cart
+                const cartMatches = cartItems.filter(item => 
+                    item.name.toLowerCase().includes(query.toLowerCase())
+                );
+
+                if (cartMatches.length > 0) {
+                    resultsHtml += cartMatches.map(item => `
+                        <div class="search-result-item" onclick="scrollToCartItem('${item.id}')">
+                            <img src="${item.image || 'img/product-1.png'}" alt="${item.name}" class="search-result-image">
+                            <div class="search-result-info">
+                                <div class="search-result-name">${highlightMatch(item.name, query)}</div>
+                                <div class="search-result-price">KSh ${Number(item.price).toLocaleString()}</div>
+                            </div>
+                            <span class="badge bg-info search-result-badge">In Cart</span>
+                        </div>
+                    `).join('');
+                }
+
+                // Search API products
+                let url = `${API_BASE}/products?search=${encodeURIComponent(query)}&limit=5`;
+                if (category) {
+                    url += `&category=${encodeURIComponent(category)}`;
+                }
+
+                const response = await fetch(url);
+                const data = await response.json();
+                const products = data.products || data || [];
+
+                if (products && products.length > 0) {
+                    resultsHtml += products.map(product => {
+                        let productImage = 'img/product-1.png';
+                        if (product.images && Array.isArray(product.images) && product.images.length > 0) {
+                            productImage = product.images[0];
+                        } else if (product.image_url) {
+                            productImage = product.image_url;
+                        } else if (product.image) {
+                            productImage = product.image;
+                        }
+
+                        return `
+                            <div class="search-result-item" onclick="goToProduct(${product.id})">
+                                <img src="${productImage}" alt="${product.name}" class="search-result-image">
+                                <div class="search-result-info">
+                                    <div class="search-result-name">${highlightMatch(product.name, query)}</div>
+                                    <div class="search-result-price">KSh ${Number(product.price).toLocaleString()}</div>
+                                </div>
+                                ${product.stock > 0 ? '<span class="badge bg-success search-result-badge">In Stock</span>' : '<span class="badge bg-danger search-result-badge">Out of Stock</span>'}
+                            </div>
+                        `;
+                    }).join('');
+                }
+
+                if (!resultsHtml) {
+                    resultsHtml = `
+                        <div class="search-no-results">
+                            <i class="fas fa-search"></i>
+                            <p>No products found for "${highlightMatch(query, query)}"</p>
+                        </div>
+                    `;
+                }
+
+                dropdown.innerHTML = resultsHtml;
+                dropdown.style.display = 'block';
+            } catch (error) {
+                console.error('Search error:', error);
+                dropdown.innerHTML = `
+                    <div class="search-no-results">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <p>Error performing search. Please try again.</p>
+                    </div>
+                `;
+                dropdown.style.display = 'block';
+            }
+        }
+
+        function highlightMatch(text, query) {
+            if (!query) return text;
+            const regex = new RegExp(`(${query})`, 'gi');
+            return text.replace(regex, '<span class="highlight">$1</span>');
+        }
+
+        function goToProduct(productId) {
+            window.location.href = `product-detail.html?id=${productId}`;
+        }
+
+        function scrollToCartItem(itemId) {
+            document.getElementById('checkoutSearchDropdown').style.display = 'none';
+            const element = document.querySelector(`[data-item-id="${itemId}"]`);
+            if (element) {
+                element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                element.style.background = '#fff3cd';
+                setTimeout(() => {
+                    element.style.background = '';
+                }, 2000);
+            }
+        }
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(e) {
+            const dropdown = document.getElementById('checkoutSearchDropdown');
+            const searchInput = document.getElementById('checkoutSearchInput');
+            if (dropdown && searchInput && !dropdown.contains(e.target) && e.target !== searchInput) {
+                dropdown.style.display = 'none';
+            }
+        });
+    </script>
+
+    <style>
+        @keyframes slideIn {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideOut {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+        }
+    </style>
     </body>
 
 </html>

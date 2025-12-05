@@ -28,6 +28,86 @@
     <link href="css/style.css" rel="stylesheet">
 
     <style>
+        /* Search Results Dropdown */
+        .search-results-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+            max-height: 400px;
+            overflow-y: auto;
+            z-index: 1000;
+            margin-top: 5px;
+        }
+
+        .search-result-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            border-bottom: 1px solid #f0f0f0;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .search-result-item:hover {
+            background: #f8f9fa;
+        }
+
+        .search-result-item:last-child {
+            border-bottom: none;
+        }
+
+        .search-result-image {
+            width: 50px;
+            height: 50px;
+            object-fit: contain;
+            border-radius: 8px;
+            background: #f8f9fa;
+            margin-right: 12px;
+        }
+
+        .search-result-info {
+            flex: 1;
+        }
+
+        .search-result-name {
+            font-weight: 600;
+            color: #333;
+            font-size: 0.95rem;
+            margin-bottom: 3px;
+        }
+
+        .search-result-price {
+            color: var(--bs-primary);
+            font-weight: 700;
+        }
+
+        .search-result-badge {
+            font-size: 0.7rem;
+            padding: 3px 8px;
+            border-radius: 20px;
+        }
+
+        .search-no-results {
+            padding: 30px;
+            text-align: center;
+            color: #999;
+        }
+
+        .search-no-results i {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .highlight {
+            background-color: #fff59d;
+            font-weight: 600;
+        }
+        
         /* Product Image Gallery */
         .product-gallery {
             position: sticky;
@@ -302,143 +382,312 @@
                 height: 350px;
             }
         }
+
+        /* Loading Skeleton */
+        .skeleton {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            border-radius: 4px;
+        }
+
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+
+        .skeleton-text { height: 20px; margin-bottom: 10px; }
+        .skeleton-title { height: 32px; width: 70%; margin-bottom: 15px; }
+        .skeleton-price { height: 48px; width: 50%; margin-bottom: 15px; }
+        .skeleton-image { height: 400px; width: 100%; }
+
+        /* Error State */
+        .product-not-found {
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .product-not-found i {
+            font-size: 80px;
+            color: #ddd;
+            margin-bottom: 20px;
+        }
+
+        .product-not-found h2 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .product-not-found p {
+            color: #666;
+            margin-bottom: 20px;
+        }
+
+        /* Description Styles */
+        .product-description {
+            line-height: 1.8;
+            color: #555;
+        }
+
+        .product-description p {
+            margin-bottom: 1rem;
+        }
     </style>
 </head>
 
 <body>
-    <!-- Product Detail Section -->
-    <div class="container-fluid py-5">
-        <div class="container">
-            <!-- Breadcrumb -->
-            <nav aria-label="breadcrumb" class="mb-4">
-                <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="index.html">Home</a></li>
-                    <li class="breadcrumb-item"><a href="shop.html">Shop</a></li>
-                    <li class="breadcrumb-item active" id="breadcrumb-product">Product Details</li>
-                </ol>
-            </nav>
-
-            <div class="row g-4">
-                <!-- Product Gallery -->
-                <div class="col-lg-6">
-                    <div class="product-gallery">
-                        <div class="main-image" id="mainImage">
-                            <img src="img/product-1.png" alt="Product" id="mainImg">
-                        </div>
-                        <div class="thumbnail-gallery" id="thumbnailGallery">
-                            <div class="thumbnail active" onclick="changeImage('img/product-1.png')">
-                                <img src="img/product-1.png" alt="Thumbnail 1">
-                            </div>
-                            <div class="thumbnail" onclick="changeImage('img/product-2.png')">
-                                <img src="img/product-2.png" alt="Thumbnail 2">
-                            </div>
-                            <div class="thumbnail" onclick="changeImage('img/product-3.png')">
-                                <img src="img/product-3.png" alt="Thumbnail 3">
-                            </div>
-                            <div class="thumbnail" onclick="changeImage('img/product-4.png')">
-                                <img src="img/product-4.png" alt="Thumbnail 4">
-                            </div>
-                        </div>
-                    </div>
+    <!-- Topbar Start -->
+    <div class="container-fluid px-5 d-none border-bottom d-lg-block">
+        <div class="row gx-0 align-items-center">
+            <div class="col-lg-4 text-center text-lg-start mb-lg-0">
+                <div class="d-flex flex-wrap">
+                    <a href="#" class="text-muted me-4"><i class="fas fa-question-circle me-2"></i>Help</a>
+                    <a href="#" class="text-muted me-4"><i class="fas fa-headset me-2"></i>Support</a>
+                    <a href="contact.html" class="text-muted me-0"><i class="fas fa-phone-alt me-2"></i>Contact</a>
                 </div>
-
-                <!-- Product Details -->
-                <div class="col-lg-6">
-                    <div class="condition-badge condition-new" id="conditionBadge">
-                        <i class="fas fa-check-circle me-2"></i>Brand New
-                    </div>
-
-                    <h1 class="product-title" id="productName">HP Pavilion 15 Laptop - 15.6" FHD Display</h1>
-
-                    <div class="product-rating">
-                        <div class="rating-stars">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star-half-alt"></i>
-                        </div>
-                        <span class="text-muted">(4.5) 124 Reviews</span>
-                    </div>
-
-                    <div class="stock-status" id="stockStatus">
-                        <i class="fas fa-check-circle"></i>
-                        <span>In Stock - Ships within 24 hours</span>
-                    </div>
-
-                    <div class="price-section">
-                        <div class="d-flex align-items-center">
-                            <div class="current-price" id="currentPrice">KSh 159,999</div>
-                            <div class="old-price" id="oldPrice">KSh 185,000</div>
-                        </div>
-                        <div class="discount-badge">Save KSh 25,001 (14% OFF)</div>
-                    </div>
-
-                    <!-- Brand & SKU -->
-                    <div class="mb-4">
-                        <p class="mb-2"><strong>Brand:</strong> <span id="productBrand">HP</span></p>
-                        <p class="mb-2"><strong>SKU:</strong> <span id="productSku">HP-LAP-2025-001</span></p>
-                        <p class="mb-0"><strong>Category:</strong> <span id="productCategory">Laptops</span></p>
-                    </div>
-
-                    <!-- Quantity Selector -->
-                    <div class="quantity-selector">
-                        <strong>Quantity:</strong>
-                        <div class="quantity-input">
-                            <button class="quantity-btn" onclick="decreaseQuantity()">
-                                <i class="fas fa-minus"></i>
-                            </button>
-                            <input type="number" class="quantity-value" id="quantity" value="1" min="1" max="10" readonly>
-                            <button class="quantity-btn" onclick="increaseQuantity()">
-                                <i class="fas fa-plus"></i>
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Action Buttons -->
-                    <div class="action-buttons">
-                        <button class="btn btn-primary btn-add-cart" onclick="addToCart()">
-                            <i class="fas fa-shopping-cart me-2"></i>Add to Cart
-                        </button>
-                        <button class="btn-whatsapp" onclick="chatWhatsApp()">
-                            <i class="fab fa-whatsapp fa-lg"></i>
-                            Chat on WhatsApp
-                        </button>
-                    </div>
-
-                    <!-- Additional Actions -->
-                    <div class="d-flex gap-3 mt-3">
-                        <button class="btn btn-outline-danger flex-fill" onclick="addToWishlist()">
-                            <i class="fas fa-heart me-2"></i>Add to Wishlist
-                        </button>
-                        <button class="btn btn-outline-secondary flex-fill" onclick="compareProduct()">
-                            <i class="fas fa-exchange-alt me-2"></i>Compare
-                        </button>
-                    </div>
-
-                    <!-- Quick Info -->
-                    <div class="mt-4 p-3 bg-light rounded">
-                        <div class="row g-3">
-                            <div class="col-6">
-                                <i class="fas fa-truck text-primary me-2"></i>
-                                <small>Free Delivery</small>
-                            </div>
-                            <div class="col-6">
-                                <i class="fas fa-undo text-primary me-2"></i>
-                                <small>30-Day Returns</small>
-                            </div>
-                            <div class="col-6">
-                                <i class="fas fa-shield-alt text-primary me-2"></i>
-                                <small>1 Year Warranty</small>
-                            </div>
-                            <div class="col-6">
-                                <i class="fas fa-headset text-primary me-2"></i>
-                                <small>24/7 Support</small>
-                            </div>
-                        </div>
+            </div>
+            <div class="col-lg-4 text-center mb-2 mb-lg-0">
+                <a href="index.html" class="text-decoration-none">
+                    <span class="h4 text-uppercase text-primary bg-dark px-2">Awesome</span>
+                    <span class="h4 text-uppercase text-dark bg-primary px-2 ml-n1">Technologies</span>
+                </a>
+            </div>
+            <div class="col-lg-4 text-center text-lg-end">
+                <div class="d-flex flex-wrap align-items-center justify-content-end">
+                    <a href="tel:+254704546916" class="text-muted me-4"><i class="fas fa-phone-alt me-2"></i>+254 704 546 916</a>
+                    <div class="dropdown">
+                        <a href="#" class="dropdown-toggle text-muted" data-bs-toggle="dropdown"><i class="fas fa-user-cog me-2"></i>Dashboard</a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="#">My Account</a></li>
+                            <li><a class="dropdown-item" href="#">Orders</a></li>
+                            <li><a class="dropdown-item" href="#">Wishlist</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="#">Logout</a></li>
+                        </ul>
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
+    <!-- Topbar End -->
+
+    <!-- Header Start -->
+    <div class="container-fluid px-5 py-4 d-none d-lg-block">
+        <div class="row gx-0 align-items-center">
+            <div class="col-lg-3">
+                <a href="index.html" class="text-decoration-none d-flex align-items-center">
+                    <h1 class="m-0 text-uppercase text-primary"><i class="fa fa-laptop me-2"></i>AWESOME</h1>
+                </a>
+            </div>
+            <div class="col-lg-6">
+                <div class="position-relative w-100" style="max-width: 700px;">
+                    <input class="form-control w-100 py-3 ps-4 pe-5" type="text" id="productSearchInput" placeholder="Search for products...">
+                    <button type="button" class="btn btn-primary py-3 px-4 position-absolute top-0 end-0" id="searchBtn">
+                        <i class="fa fa-search"></i>
+                    </button>
+                    <div class="search-results-dropdown" id="searchResultsDropdown"></div>
+                </div>
+            </div>
+            <div class="col-lg-3 text-end">
+                <a href="cart-new.html" class="btn btn-outline-primary btn-lg position-relative">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="badge bg-danger position-absolute top-0 start-100 translate-middle rounded-pill" id="headerCartCount">0</span>
+                </a>
+            </div>
+        </div>
+    </div>
+    <!-- Header End -->
+
+    <!-- Navbar Start -->
+    <div class="container-fluid nav-bar p-0">
+        <nav class="navbar navbar-expand-lg bg-dark navbar-dark py-3 px-5">
+            <a href="index.html" class="navbar-brand d-block d-lg-none">
+                <h1 class="m-0 text-uppercase text-primary"><i class="fa fa-laptop me-2"></i>AWESOME</h1>
+            </a>
+            <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-between" id="navbarCollapse">
+                <div class="navbar-nav mr-auto">
+                    <div class="nav-item dropdown">
+                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
+                            <i class="fas fa-th-large me-2"></i>Categories
+                        </a>
+                        <div class="dropdown-menu" id="categoriesDropdown">
+                            <a href="shop-new.html" class="dropdown-item">All Products</a>
+                            <hr class="dropdown-divider">
+                            <!-- Dynamic categories loaded here -->
+                        </div>
+                    </div>
+                    <a href="index.html" class="nav-item nav-link">Home</a>
+                    <a href="shop-new.html" class="nav-item nav-link">Shop</a>
+                    <a href="cart-new.html" class="nav-item nav-link">Cart</a>
+                    <a href="contact.html" class="nav-item nav-link">Contact</a>
+                </div>
+                <div class="navbar-nav ml-auto d-none d-lg-flex">
+                    <a href="#" class="nav-item nav-link"><i class="fas fa-heart me-2"></i>Wishlist</a>
+                </div>
+            </div>
+        </nav>
+    </div>
+    <!-- Navbar End -->
+
+    <!-- Page Header Start -->
+    <div class="container-fluid page-header py-5" style="background: linear-gradient(135deg, #6B73FF 0%, #000DFF 100%);">
+        <h1 class="text-center text-white display-6" id="pageTitle">Product Details</h1>
+        <ol class="breadcrumb justify-content-center mb-0">
+            <li class="breadcrumb-item"><a href="index.html" class="text-white">Home</a></li>
+            <li class="breadcrumb-item"><a href="shop-new.html" class="text-white">Shop</a></li>
+            <li class="breadcrumb-item active text-white-50" id="breadcrumbProductName">Product Details</li>
+        </ol>
+    </div>
+    <!-- Page Header End -->
+
+    <!-- Product Detail Section -->
+    <div class="container-fluid py-5">
+        <div class="container">
+            <!-- Loading State -->
+            <div id="loadingState" class="row g-4">
+                <div class="col-lg-6">
+                    <div class="skeleton skeleton-image"></div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="skeleton skeleton-text" style="width: 100px;"></div>
+                    <div class="skeleton skeleton-title"></div>
+                    <div class="skeleton skeleton-text" style="width: 60%;"></div>
+                    <div class="skeleton skeleton-price"></div>
+                    <div class="skeleton skeleton-text"></div>
+                    <div class="skeleton skeleton-text"></div>
+                    <div class="skeleton skeleton-text" style="width: 80%;"></div>
+                </div>
+            </div>
+
+            <!-- Error State -->
+            <div id="errorState" class="product-not-found" style="display: none;">
+                <i class="fas fa-box-open"></i>
+                <h2>Product Not Found</h2>
+                <p>Sorry, the product you're looking for doesn't exist or has been removed.</p>
+                <a href="shop.html" class="btn btn-primary btn-lg"><i class="fas fa-shopping-bag me-2"></i>Browse Products</a>
+            </div>
+
+            <!-- Product Content (Hidden until loaded) -->
+            <div id="productContent" style="display: none;">
+                <div class="row g-4">
+                    <!-- Product Gallery -->
+                    <div class="col-lg-6">
+                        <div class="product-gallery">
+                            <div class="main-image" id="mainImage">
+                                <img src="img/product-1.png" alt="Product" id="mainImg" onerror="this.onerror=null; this.src='img/product-1.png';">
+                            </div>
+                            <div class="thumbnail-gallery" id="thumbnailGallery">
+                                <!-- Thumbnails generated dynamically -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Product Details -->
+                    <div class="col-lg-6">
+                        <div class="condition-badge" id="conditionBadge">
+                            <i class="fas fa-check-circle me-2"></i><span id="conditionText">Brand New</span>
+                        </div>
+
+                        <h1 class="product-title" id="productName">Loading...</h1>
+
+                        <div class="product-rating">
+                            <div class="rating-stars">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star-half-alt"></i>
+                            </div>
+                            <span class="text-muted">(4.5) Customer Reviews</span>
+                        </div>
+
+                        <div class="stock-status" id="stockStatus">
+                            <i class="fas fa-check-circle"></i>
+                            <span id="stockText">Checking availability...</span>
+                        </div>
+
+                        <div class="price-section">
+                            <div class="d-flex align-items-center">
+                                <div class="current-price" id="currentPrice">KSh 0</div>
+                                <div class="old-price" id="oldPrice" style="display: none;">KSh 0</div>
+                            </div>
+                            <div class="discount-badge" id="discountBadge" style="display: none;"></div>
+                        </div>
+
+                        <!-- Brand & Info -->
+                        <div class="mb-4">
+                            <p class="mb-2"><strong>Brand:</strong> <span id="productBrand">-</span></p>
+                            <p class="mb-2"><strong>SKU:</strong> <span id="productSku">-</span></p>
+                            <p class="mb-0"><strong>Category:</strong> <span id="productCategory">-</span></p>
+                        </div>
+
+                        <!-- Description Preview -->
+                        <div class="mb-4" id="descriptionPreview">
+                            <p class="text-muted" id="shortDescription">-</p>
+                        </div>
+
+                        <!-- Quantity Selector -->
+                        <div class="quantity-selector">
+                            <strong>Quantity:</strong>
+                            <div class="quantity-input">
+                                <button class="quantity-btn" onclick="decreaseQuantity()">
+                                    <i class="fas fa-minus"></i>
+                                </button>
+                                <input type="number" class="quantity-value" id="quantity" value="1" min="1" readonly>
+                                <button class="quantity-btn" onclick="increaseQuantity()">
+                                    <i class="fas fa-plus"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="action-buttons">
+                            <button class="btn btn-primary btn-add-cart" onclick="addToCart()">
+                                <i class="fas fa-shopping-cart me-2"></i>Add to Cart
+                            </button>
+                            <button class="btn-whatsapp" onclick="chatWhatsApp()">
+                                <i class="fab fa-whatsapp fa-lg"></i>
+                                Chat on WhatsApp
+                            </button>
+                        </div>
+
+                        <!-- Additional Actions -->
+                        <div class="d-flex gap-3 mt-3">
+                            <button class="btn btn-outline-danger flex-fill" onclick="addToWishlist()">
+                                <i class="fas fa-heart me-2"></i>Add to Wishlist
+                            </button>
+                            <button class="btn btn-outline-secondary flex-fill" onclick="compareProduct()">
+                                <i class="fas fa-exchange-alt me-2"></i>Compare
+                            </button>
+                        </div>
+
+                        <!-- Quick Info -->
+                        <div class="mt-4 p-3 bg-light rounded">
+                            <div class="row g-3">
+                                <div class="col-6">
+                                    <i class="fas fa-truck text-primary me-2"></i>
+                                    <small>Free Delivery</small>
+                                </div>
+                                <div class="col-6">
+                                    <i class="fas fa-undo text-primary me-2"></i>
+                                    <small>30-Day Returns</small>
+                                </div>
+                                <div class="col-6">
+                                    <i class="fas fa-shield-alt text-primary me-2"></i>
+                                    <small>1 Year Warranty</small>
+                                </div>
+                                <div class="col-6">
+                                    <i class="fas fa-headset text-primary me-2"></i>
+                                    <small>24/7 Support</small>
+                                </div>
+                            </div>
+                        </div>
+                </div>
+            </div>
+            <!-- End Product Content row -->
 
             <!-- Product Tabs -->
             <div class="product-tabs mt-5">
@@ -637,14 +886,16 @@
             </div>
 
             <!-- Related Products -->
-            <div class="mt-5">
+            <div class="mt-5" id="relatedProductsSection">
                 <h3 class="mb-4">Related Products</h3>
-                <div class="row g-4">
+                <div class="row g-4" id="relatedProductsGrid">
                     <!-- Related product cards will be loaded here via JavaScript -->
                 </div>
             </div>
         </div>
+        <!-- End productContent -->
     </div>
+</div>
 
     <!-- JavaScript Libraries -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
@@ -653,20 +904,363 @@
     <script src="js/cart-manager.js"></script>
 
     <script>
+        // Global product data
+        let currentProduct = null;
+        const API_BASE = 'http://localhost:5000/api';
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            loadCategories();
+            loadProduct();
+            updateCartCount();
+            initSearch();
+        });
+
+        // Load categories for navbar
+        async function loadCategories() {
+            try {
+                const response = await fetch(`${API_BASE}/categories`);
+                const categories = await response.json();
+                
+                const dropdown = document.getElementById('categoriesDropdown');
+                const existingDivider = dropdown.querySelector('.dropdown-divider');
+                
+                categories.forEach(cat => {
+                    const item = document.createElement('a');
+                    item.className = 'dropdown-item';
+                    item.href = `shop-new.html?category=${cat.id}`;
+                    item.textContent = cat.name;
+                    dropdown.appendChild(item);
+                });
+            } catch (error) {
+                console.error('Error loading categories:', error);
+            }
+        }
+
+        // Update cart count in header
+        function updateCartCount() {
+            const cart = JSON.parse(localStorage.getItem('awesomeTech_cart') || '[]');
+            const count = cart.reduce((sum, item) => sum + (item.quantity || 1), 0);
+            document.getElementById('headerCartCount').textContent = count;
+        }
+
+        // Load product from API
+        async function loadProduct() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const productId = urlParams.get('id');
+
+            if (!productId) {
+                showError();
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/products/${productId}`);
+                
+                if (!response.ok) {
+                    throw new Error('Product not found');
+                }
+
+                const product = await response.json();
+                currentProduct = product;
+                displayProduct(product);
+                loadRelatedProducts(product.category_id);
+
+            } catch (error) {
+                console.error('Error loading product:', error);
+                showError();
+            }
+        }
+
+        // Show error state
+        function showError() {
+            document.getElementById('loadingState').style.display = 'none';
+            document.getElementById('errorState').style.display = 'block';
+            document.getElementById('productContent').style.display = 'none';
+        }
+
+        // Display product data
+        function displayProduct(product) {
+            // Hide loading, show content
+            document.getElementById('loadingState').style.display = 'none';
+            document.getElementById('productContent').style.display = 'block';
+
+            // Update page title and breadcrumb
+            document.title = `${product.name} - Awesome Technologies`;
+            document.getElementById('breadcrumbProductName').textContent = product.name;
+
+            // Product name
+            document.getElementById('productName').textContent = product.name;
+
+            // Condition badge
+            const conditionBadge = document.getElementById('conditionBadge');
+            const conditionText = document.getElementById('conditionText');
+            const condition = (product.condition || 'new').toLowerCase();
+            
+            conditionBadge.className = 'condition-badge';
+            if (condition === 'new' || condition === 'brand new') {
+                conditionBadge.classList.add('condition-new');
+                conditionText.textContent = 'Brand New';
+            } else if (condition === 'refurbished') {
+                conditionBadge.classList.add('condition-refurbished');
+                conditionText.textContent = 'Refurbished';
+            } else {
+                conditionBadge.classList.add('condition-used');
+                conditionText.textContent = condition.charAt(0).toUpperCase() + condition.slice(1);
+            }
+
+            // Stock status
+            const stockStatus = document.getElementById('stockStatus');
+            const stockText = document.getElementById('stockText');
+            const stockQty = product.stock_quantity || 0;
+            
+            if (stockQty > 10) {
+                stockStatus.className = 'stock-status in-stock';
+                stockText.innerHTML = `<i class="fas fa-check-circle me-2"></i>In Stock (${stockQty} available) - Ships within 24 hours`;
+            } else if (stockQty > 0) {
+                stockStatus.className = 'stock-status low-stock';
+                stockText.innerHTML = `<i class="fas fa-exclamation-circle me-2"></i>Low Stock - Only ${stockQty} left!`;
+            } else {
+                stockStatus.className = 'stock-status out-of-stock';
+                stockText.innerHTML = `<i class="fas fa-times-circle me-2"></i>Out of Stock`;
+            }
+
+            // Set max quantity
+            document.getElementById('quantity').max = stockQty > 0 ? Math.min(stockQty, 10) : 0;
+
+            // Prices
+            const price = product.price || 0;
+            const oldPrice = product.old_price || null;
+            
+            document.getElementById('currentPrice').textContent = `KSh ${price.toLocaleString()}`;
+            
+            if (oldPrice && oldPrice > price) {
+                document.getElementById('oldPrice').textContent = `KSh ${oldPrice.toLocaleString()}`;
+                document.getElementById('oldPrice').style.display = 'block';
+                
+                const savings = oldPrice - price;
+                const discount = Math.round((savings / oldPrice) * 100);
+                document.getElementById('discountBadge').textContent = `Save KSh ${savings.toLocaleString()} (${discount}% OFF)`;
+                document.getElementById('discountBadge').style.display = 'inline-block';
+            }
+
+            // Brand, SKU, Category
+            document.getElementById('productBrand').textContent = product.brand || '-';
+            document.getElementById('productSku').textContent = product.sku || product.id.substring(0, 12).toUpperCase();
+            document.getElementById('productCategory').textContent = product.category?.name || '-';
+
+            // Short description
+            const desc = product.description || '';
+            const shortDesc = desc.length > 200 ? desc.substring(0, 200) + '...' : desc;
+            document.getElementById('shortDescription').textContent = shortDesc || 'No description available.';
+
+            // Image gallery
+            setupImageGallery(product.images);
+
+            // Update tabs
+            updateDescriptionTab(product);
+            updateSpecificationsTab(product);
+        }
+
+        // Setup image gallery
+        function setupImageGallery(images) {
+            const gallery = document.getElementById('thumbnailGallery');
+            const mainImg = document.getElementById('mainImg');
+            
+            gallery.innerHTML = '';
+            
+            // Ensure images is an array
+            let imageArray = [];
+            if (Array.isArray(images) && images.length > 0) {
+                imageArray = images;
+            } else if (typeof images === 'string') {
+                imageArray = [images];
+            } else {
+                imageArray = ['img/product-1.png'];
+            }
+
+            // Set main image
+            mainImg.src = imageArray[0];
+            mainImg.onerror = function() { 
+                this.onerror = null; 
+                this.src = 'img/product-1.png'; 
+            };
+
+            // Create thumbnails
+            imageArray.forEach((img, index) => {
+                const thumb = document.createElement('div');
+                thumb.className = 'thumbnail' + (index === 0 ? ' active' : '');
+                thumb.onclick = function() { changeImage(img, this); };
+                
+                const thumbImg = document.createElement('img');
+                thumbImg.src = img;
+                thumbImg.alt = `Thumbnail ${index + 1}`;
+                thumbImg.onerror = function() { 
+                    this.onerror = null; 
+                    this.src = 'img/product-1.png'; 
+                };
+                
+                thumb.appendChild(thumbImg);
+                gallery.appendChild(thumb);
+            });
+        }
+
+        // Update description tab
+        function updateDescriptionTab(product) {
+            const descTab = document.getElementById('description');
+            const description = product.description || 'No detailed description available for this product.';
+            
+            let featuresHtml = '';
+            if (product.specs) {
+                const specs = typeof product.specs === 'string' ? JSON.parse(product.specs) : product.specs;
+                const specKeys = Object.keys(specs);
+                if (specKeys.length > 0) {
+                    featuresHtml = `
+                        <h5 class="mt-4 mb-3">Key Features:</h5>
+                        <ul class="list-unstyled">
+                            ${specKeys.map(key => `
+                                <li class="mb-2"><i class="fas fa-check text-success me-2"></i>${key}: ${specs[key]}</li>
+                            `).join('')}
+                        </ul>
+                    `;
+                }
+            }
+
+            descTab.innerHTML = `
+                <h4 class="mb-3">Product Description</h4>
+                <div class="product-description">
+                    ${description.split('\n').map(p => `<p>${p}</p>`).join('')}
+                </div>
+                ${featuresHtml}
+            `;
+        }
+
+        // Update specifications tab
+        function updateSpecificationsTab(product) {
+            const specsTab = document.getElementById('specifications');
+            
+            let specs = {};
+            if (product.specs) {
+                specs = typeof product.specs === 'string' ? JSON.parse(product.specs) : product.specs;
+            }
+
+            // Add basic info
+            const allSpecs = {
+                'Brand': product.brand || '-',
+                'Condition': product.condition || 'New',
+                'SKU': product.sku || product.id.substring(0, 12).toUpperCase(),
+                ...specs
+            };
+
+            const getIcon = (key) => {
+                const icons = {
+                    'processor': 'fa-microchip',
+                    'cpu': 'fa-microchip',
+                    'ram': 'fa-memory',
+                    'memory': 'fa-memory',
+                    'storage': 'fa-hdd',
+                    'display': 'fa-desktop',
+                    'screen': 'fa-desktop',
+                    'graphics': 'fa-photo-video',
+                    'gpu': 'fa-photo-video',
+                    'battery': 'fa-battery-full',
+                    'os': 'fa-windows',
+                    'operating': 'fa-windows',
+                    'brand': 'fa-tag',
+                    'condition': 'fa-check-circle',
+                    'sku': 'fa-barcode',
+                    'weight': 'fa-weight',
+                    'color': 'fa-palette',
+                    'warranty': 'fa-shield-alt'
+                };
+                const lowerKey = key.toLowerCase();
+                for (const [match, icon] of Object.entries(icons)) {
+                    if (lowerKey.includes(match)) return icon;
+                }
+                return 'fa-info-circle';
+            };
+
+            specsTab.innerHTML = `
+                <h4 class="mb-3">Technical Specifications</h4>
+                <table class="specs-table">
+                    <tbody>
+                        ${Object.entries(allSpecs).map(([key, value]) => `
+                            <tr>
+                                <td><i class="fas ${getIcon(key)} text-primary me-2"></i>${key}</td>
+                                <td>${value}</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+        }
+
+        // Load related products
+        async function loadRelatedProducts(categoryId) {
+            if (!categoryId) return;
+
+            try {
+                const response = await fetch(`${API_BASE}/products?category=${categoryId}&limit=4`);
+                const data = await response.json();
+                const products = data.data || data;
+
+                const container = document.getElementById('relatedProductsGrid');
+                if (!container) return;
+
+                // Filter out current product
+                const related = products.filter(p => p.id !== currentProduct.id).slice(0, 4);
+
+                if (related.length === 0) {
+                    container.innerHTML = '<div class="col-12 text-center text-muted">No related products found.</div>';
+                    return;
+                }
+
+                container.innerHTML = related.map(product => {
+                    const img = Array.isArray(product.images) && product.images.length > 0 
+                        ? product.images[0] 
+                        : 'img/product-1.png';
+                    
+                    return `
+                        <div class="col-lg-3 col-md-6">
+                            <div class="product-card h-100 border rounded overflow-hidden">
+                                <div class="position-relative" style="height: 200px;">
+                                    <img src="${img}" alt="${product.name}" 
+                                        class="w-100 h-100" style="object-fit: cover;"
+                                        onerror="this.onerror=null; this.src='img/product-1.png';">
+                                </div>
+                                <div class="p-3">
+                                    <h6 class="mb-2">${product.name}</h6>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <span class="text-primary fw-bold">KSh ${(product.price || 0).toLocaleString()}</span>
+                                        <a href="product-detail.html?id=${product.id}" class="btn btn-sm btn-outline-primary">View</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+
+            } catch (error) {
+                console.error('Error loading related products:', error);
+            }
+        }
+
         // Image Gallery Functions
-        function changeImage(imageSrc) {
+        function changeImage(imageSrc, thumbElement) {
             document.getElementById('mainImg').src = imageSrc;
             
             // Update active thumbnail
             const thumbnails = document.querySelectorAll('.thumbnail');
             thumbnails.forEach(thumb => thumb.classList.remove('active'));
-            event.currentTarget.classList.add('active');
+            if (thumbElement) {
+                thumbElement.classList.add('active');
+            }
         }
 
         // Quantity Functions
         function increaseQuantity() {
             const input = document.getElementById('quantity');
-            const max = parseInt(input.max);
+            const max = parseInt(input.max) || 10;
             const current = parseInt(input.value);
             if (current < max) {
                 input.value = current + 1;
@@ -675,7 +1269,7 @@
 
         function decreaseQuantity() {
             const input = document.getElementById('quantity');
-            const min = parseInt(input.min);
+            const min = parseInt(input.min) || 1;
             const current = parseInt(input.value);
             if (current > min) {
                 input.value = current - 1;
@@ -684,54 +1278,54 @@
 
         // Add to Cart
         function addToCart() {
+            if (!currentProduct) {
+                showNotification('Product not loaded', 'error');
+                return;
+            }
+
             const quantity = parseInt(document.getElementById('quantity').value);
-            const productName = document.getElementById('productName').textContent;
-            const productBrand = document.getElementById('productBrand').textContent;
-            const priceText = document.getElementById('currentPrice').textContent;
-            const price = parseInt(priceText.replace(/[^0-9]/g, ''));
             
-            const oldPriceElement = document.getElementById('oldPrice');
-            const oldPrice = oldPriceElement && oldPriceElement.textContent ? 
-                parseInt(oldPriceElement.textContent.replace(/[^0-9]/g, '')) : null;
-            
-            // Get product ID from URL or generate one
-            const urlParams = new URLSearchParams(window.location.search);
-            const productId = urlParams.get('id') || Math.floor(Math.random() * 10000);
-            
-            // Create product object
+            // Create product object with all data
             const product = {
-                id: parseInt(productId),
-                name: productName,
-                brand: productBrand,
-                price: price,
-                oldPrice: oldPrice,
-                image: document.getElementById('mainImg').src,
-                specs: {
-                    processor: 'Intel Core i7 11th Gen',
-                    ram: '16GB',
-                    storage: '512GB SSD'
-                }
+                id: currentProduct.id,
+                name: currentProduct.name,
+                brand: currentProduct.brand || '',
+                price: currentProduct.price || 0,
+                old_price: currentProduct.old_price || null,
+                image: Array.isArray(currentProduct.images) && currentProduct.images[0] 
+                    ? currentProduct.images[0] 
+                    : 'img/product-1.png',
+                images: currentProduct.images || [],
+                description: currentProduct.description || '',
+                condition: currentProduct.condition || 'New',
+                stock_quantity: currentProduct.stock_quantity || 0,
+                specs: currentProduct.specs || {}
             };
             
             // Add to cart using cart manager
             window.cartManager.addItem(product, quantity);
+            updateCartCount();
         }
 
         // WhatsApp Chat
         function chatWhatsApp() {
-            const productName = document.getElementById('productName').textContent;
-            const productBrand = document.getElementById('productBrand').textContent;
-            const productPrice = document.getElementById('currentPrice').textContent;
+            if (!currentProduct) {
+                showNotification('Product not loaded', 'error');
+                return;
+            }
+
             const whatsappNumber = '+254704546916';
             
             let message = `Hello! I'm interested in this product:\n\n`;
-            message += `📱 *${productName}*\n`;
-            message += `🏷️ Brand: ${productBrand}\n`;
-            message += `💰 Price: ${productPrice}\n\n`;
+            message += `📱 *${currentProduct.name}*\n`;
+            message += `🏷️ Brand: ${currentProduct.brand || 'N/A'}\n`;
+            message += `💰 Price: KSh ${(currentProduct.price || 0).toLocaleString()}\n`;
+            message += `📦 Condition: ${currentProduct.condition || 'New'}\n\n`;
             message += `Could you please provide more information about:\n`;
             message += `• Availability and stock status\n`;
             message += `• Warranty details\n`;
             message += `• Delivery options and timeline\n\n`;
+            message += `Product Link: ${window.location.href}\n\n`;
             message += `Thank you!`;
             
             const encodedMessage = encodeURIComponent(message);
@@ -741,14 +1335,12 @@
 
         // Add to Wishlist
         function addToWishlist() {
-            const productName = document.getElementById('productName').textContent;
-            // TODO: Implement wishlist logic with API
-            window.cartManager.showNotification('Added to wishlist', `${productName} saved for later`, 'success');
+            if (!currentProduct) return;
+            window.cartManager.showNotification('Added to wishlist', `${currentProduct.name} saved for later`, 'success');
         }
 
         // Compare Product
         function compareProduct() {
-            // TODO: Implement compare logic
             showNotification('Added to comparison list!', 'info');
         }
 
@@ -784,13 +1376,112 @@
             }, 3000);
         }
 
-        // Load Product Data from URL Parameter (optional)
-        const urlParams = new URLSearchParams(window.location.search);
-        const productId = urlParams.get('id');
+        // Search Functionality
+        function initSearch() {
+            const searchInput = document.getElementById('productSearchInput');
+            const searchDropdown = document.getElementById('searchResultsDropdown');
+            let searchTimeout;
 
-        if (productId) {
-            // TODO: Fetch product data from API using productId
-            console.log('Loading product:', productId);
+            if (!searchInput || !searchDropdown) return;
+
+            searchInput.addEventListener('keyup', function(e) {
+                clearTimeout(searchTimeout);
+                const query = this.value.trim();
+
+                if (query.length === 0) {
+                    searchDropdown.style.display = 'none';
+                    return;
+                }
+
+                if (e.key === 'Enter') {
+                    performProductSearch();
+                    return;
+                }
+
+                searchTimeout = setTimeout(() => {
+                    performProductSearch();
+                }, 300);
+            });
+
+            document.getElementById('searchBtn')?.addEventListener('click', performProductSearch);
+
+            // Close dropdown when clicking outside
+            document.addEventListener('click', function(e) {
+                if (searchDropdown && searchInput && !searchDropdown.contains(e.target) && e.target !== searchInput && e.target.id !== 'searchBtn') {
+                    searchDropdown.style.display = 'none';
+                }
+            });
+        }
+
+        async function performProductSearch() {
+            const query = document.getElementById('productSearchInput').value.trim();
+            const dropdown = document.getElementById('searchResultsDropdown');
+
+            if (!query) {
+                dropdown.style.display = 'none';
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/products?search=${encodeURIComponent(query)}&limit=10`);
+                const data = await response.json();
+                const products = data.products || data || [];
+
+                if (!products || products.length === 0) {
+                    dropdown.innerHTML = `
+                        <div class="search-no-results">
+                            <i class="fas fa-search"></i>
+                            <p>No products found for "${highlightMatch(query, query)}"</p>
+                        </div>
+                    `;
+                    dropdown.style.display = 'block';
+                    return;
+                }
+
+                let html = products.map(product => {
+                    let productImage = 'img/product-1.png';
+                    if (product.images && Array.isArray(product.images) && product.images.length > 0) {
+                        productImage = product.images[0];
+                    } else if (product.image_url) {
+                        productImage = product.image_url;
+                    } else if (product.image) {
+                        productImage = product.image;
+                    }
+
+                    return `
+                        <div class="search-result-item" onclick="goToProduct(${product.id})">
+                            <img src="${productImage}" alt="${product.name}" class="search-result-image">
+                            <div class="search-result-info">
+                                <div class="search-result-name">${highlightMatch(product.name, query)}</div>
+                                <div class="search-result-price">KSh ${Number(product.price).toLocaleString()}</div>
+                            </div>
+                            ${product.stock > 0 ? '<span class="badge bg-success search-result-badge">In Stock</span>' : '<span class="badge bg-danger search-result-badge">Out of Stock</span>'}
+                        </div>
+                    `;
+                }).join('');
+
+                dropdown.innerHTML = html;
+                dropdown.style.display = 'block';
+            } catch (error) {
+                console.error('Search error:', error);
+                dropdown.innerHTML = `
+                    <div class="search-no-results">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <p>Error performing search. Please try again.</p>
+                    </div>
+                `;
+                dropdown.style.display = 'block';
+            }
+        }
+
+        function goToProduct(productId) {
+            window.location.href = `product-detail.html?id=${productId}`;
+        }
+
+        function highlightMatch(text, query) {
+            if (!query) return text;
+            const regex = new RegExp(`(${query})`, 'gi');
+            return text.replace(regex, '<span class="highlight">$1</span>');
         }
     </script>
 
